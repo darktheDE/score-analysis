@@ -18,9 +18,12 @@ while(choose != 0):
         sbd_input = int(input("Nhập số báo danh: "))
         scores_input = {}
         for subject in crud_instance.subjects:
-            score = -1.0
+            score = -2.0
             while(score < 0):
-                score = float(input(f"Nhập điểm thi môn {subject}: "))
+                score = float(input(f"Nhập điểm thi môn {subject} (-1 nếu không thi môn đó): "))
+                if score == -1:
+                    scores_input[subject] = score
+                    break
                 if score < 0 or score > 10:
                     print("Điểm thi không hợp lệ, vui lòng nhập lại!")
                 else:
@@ -70,8 +73,8 @@ while(choose != 0):
         print(f"Xóa thông tin thí sinh {sbd_input} thành công!")
         crud_instance.delete_score(sbd_input)
 
-    if(choose == 0):
-        pass
+    elif(choose == 0):
+        break
 
     else:
         print("\nLựa chọn không hợp lệ, vui lòng đọc menu và lựa chọn lại!")
