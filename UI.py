@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 
-# Dữ liệu lưu trữ thông tin sinh viên
+# Dữ liệu lưu trữ thông tin cua sinh viên
 student_data = {}
 
 def load_data_from_file():
