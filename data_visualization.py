@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Dữ liệu tổ hợp môn theo khối
+# Dữ liệu tổ hợp môn theo khối cụ thể
 subject_combinations = {
     "A00": ["toan", "li", "hoa"],
     "A01": ["toan", "li", "ngoai_ngu"],
