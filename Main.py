@@ -15,19 +15,31 @@ while(choose != 0):
     choose = int(input("\nNhập lựa chọn của bạn: "))
 
     if choose == 1:
-        sbd_input = int(input("Nhập số báo danh: "))
+        sbd_input = input("Nhập số báo danh: ")
         scores_input = {}
         for subject in crud_instance.subjects:
-            score = -2.0
-            while(score < 0):
-                score = float(input(f"Nhập điểm thi môn {subject} (-1 nếu không thi môn đó): "))
-                if score == -1:
-                    scores_input[subject] = score
-                    break
-                if score < 0 or score > 10:
-                    print("Điểm thi không hợp lệ, vui lòng nhập lại!")
-                else:
-                    scores_input[subject] = score
+            score = ""
+            check_number = True
+            check_string = True
+            score_float = 0
+            while(check_number or check_string):
+                score = input(f"Nhập điểm thi môn {subject} (-1 nếu không thi môn đó): ")
+                check_number = False
+                check_string = False
+                for i in range(len(score)):
+                    if score[0] == '-':
+                        continue
+                    if score[i].isdigit() == False:
+                        check_string = True
+                        print("Có lỗi xảy ra, vui lòng nhập điểm là chữ số!")
+                        break
+                
+                if check_string == False:
+                    score_float = float(score)
+                    if score_float < -1 or score_float > 10:
+                        print("Điểm thi không hợp lệ, vui lòng nhập lại!")
+                        check_number = True
+            scores_input[subject] = score_float
         crud_instance.add_score(sbd_input, scores_input)
         print("Thêm dữ liệu cho thí sinh mới thành công!")
 
@@ -39,6 +51,8 @@ while(choose != 0):
 
     elif choose == 3:
         sbd_input = ""
+        subject_input = ""
+        score_float = 0
         check = True
         while check:
             sbd_input = input("Nhập số báo danh: ")
@@ -47,15 +61,31 @@ while(choose != 0):
                 if sbd_input == row[0]:
                     check = False
                     break
-            if check:
-                print("Số báo danh không hợp lệ, vui lòng nhập lại!")
-        subject_input = input("Nhập tên môn học cần cập nhật: ")
-        new_score_input = -1.0
-        while new_score_input < 0:
-            new_score_input = float(input("Nhập điểm thi mới cần thay đổi: "))
-            if new_score_input < 0 or new_score_input > 10:
-                print("Điểm thi không hợp lệ, vui lòng nhập lại!")
-        crud_instance.update_score(sbd_input, subject_input, new_score_input)
+            if check == False:
+                subject_input = input("Nhập tên môn học cần cập nhật: ")
+                score = ""
+                check_number = True
+                check_string = True
+                while(check_number or check_string):
+                    score = input(f"Nhập điểm thi môn {subject_input} cần thay đổi: ")
+                    check_number = False
+                    check_string = False
+                    for i in range(len(score)):
+                        if score[0] == '-':
+                            continue
+                        if score[i].isdigit() == False:
+                            check_string = True
+                            print("Có lỗi xảy ra, vui lòng nhập điểm là chữ số!")
+                            break
+                
+                    if check_string == False:
+                        score_float = float(score)
+                        if score_float < -1 or score_float > 10:
+                            print("Điểm thi không hợp lệ, vui lòng nhập lại!")
+                            check_number = True
+            if check == True:
+                print("Số báo danh không hợp lệ, vui lòng nhập lại")
+        crud_instance.update_score(sbd_input, subject_input, score_float)
         print(f"Cập nhật điểm thi môn {subject_input} thí sinh {sbd_input} thành công!")
 
     elif choose == 4:
