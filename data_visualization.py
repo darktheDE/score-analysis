@@ -82,11 +82,11 @@ def plot_score_distribution_by_subject(data, subject):
 
     # Tạo biểu đồ
     plt.figure(figsize=(12, 6))
-    plt.hist(data[subject], bins=range(0, 11), edgecolor="black", color="lightcoral")
+    plt.hist(data[subject],  bins=[x * 0.5 for x in range(21)], edgecolor="black", color="lightcoral")
     plt.xlabel("Điểm")
     plt.ylabel("Số lượng thí sinh")
     plt.title(f"Phổ điểm môn {subject.capitalize()}")
-    plt.xticks(range(0, 11))
+    plt.xticks([x * 0.5 for x in range(21)])
 
     # Hiển thị thông tin thống kê bên phải biểu đồ
     plt.figtext(0.75, 0.8, f"Điểm cao nhất: {max_score} (Số học sinh: {max_count})", ha="left")
@@ -131,7 +131,7 @@ def plot_score_distribution_by_combination(data, combination_code):
     plt.xlabel("Điểm")
     plt.ylabel("Số lượng thí sinh")
     plt.title(f"Phổ điểm tổ hợp {combination_code} ({', '.join(subjects)})")
-    plt.xticks(range(0, 31, 2))
+    plt.xticks(range(0, 31))
 
     # Hiển thị thông tin thống kê bên phải biểu đồ
     plt.figtext(0.75, 0.8, f"Điểm cao nhất: {max_score} (Số học sinh: {max_count})", ha="left")
