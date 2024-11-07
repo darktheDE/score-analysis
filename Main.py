@@ -3,7 +3,8 @@ import CRUD
 
 # code test CRUD
 choose = -1
-file_path = "score-analysis\\diem_thi_thpt_2024_QG.csv"
+# thay vì file_path = "score_analysis//diem_thi_thpt_2024_QG.csv"
+file_path = "diem_thi_thpt_2024_QG.csv"
 crud_instance = CRUD.CRUD(file_path)
 
 while(choose != 0):
