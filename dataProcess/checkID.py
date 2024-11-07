@@ -1,4 +1,5 @@
-﻿import requests
+﻿# dataProcess/checkID.py
+import requests
 
 # Viết các phần tử lại và đóng dấu xuống dòng (\n) để phân biệt các dòng
 # Lưu ý mở ''' ''' để khởi tạo file text.txt trước, những lần sau đóng lại để tránh ghi đè
