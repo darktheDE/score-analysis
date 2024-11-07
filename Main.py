@@ -2,7 +2,7 @@ import CRUD
 
 # code test CRUD
 choose = -1
-file_path = "diem_hoc_sinh_test.csv"
+file_path = "score-analysis\\diem_thi_thpt_2024_QG.csv"
 crud_instance = CRUD.CRUD(file_path)
 
 while(choose != 0):
@@ -11,6 +11,8 @@ while(choose != 0):
     print("2. Đọc dữ liệu điểm thi từ file dữ liệu và xuất ra màn hình")
     print("3. Cập nhật điểm thi thông qua số báo danh của một thí sinh")
     print("4. Xóa dữ liệu của một thí sinh thông qua số báo danh")
+    print("5. Xuất ra màn hình điểm trung bình từng tỉnh thành")
+    print("6. Xuất ra màn hình thủ khoa cho từng khối")
     print("0. Thoát chương trình")
     choose = int(input("\nNhập lựa chọn của bạn: "))
 
@@ -39,8 +41,13 @@ while(choose != 0):
                     if score_float < -1 or score_float > 10:
                         print("Điểm thi không hợp lệ, vui lòng nhập lại!")
                         check_number = True
-            scores_input[subject] = score_float
-        crud_instance.add_score(sbd_input, scores_input)
+            if(score_float == -1):
+                scores_input[subject] = ''
+            else:
+                scores_input[subject] = score_float
+            
+        language_code = input("Nhập mã ngoại ngữ: ")
+        crud_instance.add_score(sbd_input, scores_input, language_code)
         print("Thêm dữ liệu cho thí sinh mới thành công!")
 
     elif choose == 2:
@@ -102,9 +109,18 @@ while(choose != 0):
                 print("Số báo danh không hợp lệ, vui lòng nhập lại!")
         print(f"Xóa thông tin thí sinh {sbd_input} thành công!")
         crud_instance.delete_score(sbd_input)
+        
+
+    elif choose == 5:
+        crud_instance.avg_score()
+
+    elif choose == 6:
+        crud_instance.find_top_scorer_per_group()
 
     elif(choose == 0):
         break
 
     else:
         print("\nLựa chọn không hợp lệ, vui lòng đọc menu và lựa chọn lại!")
+
+    

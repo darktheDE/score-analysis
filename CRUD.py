@@ -134,24 +134,34 @@ class CRUD:
     def avg_score(self):
         with open(self.file_path, mode = 'r', newline='') as csv_file:
             reader = csv.reader(csv_file)
+            # bo qua dong dau tien
             next(reader)
             data = [row for row in reader]
         province_scores = {}
+        # duyet qua tung dong trong data
         for row in data:
+            # lay 2 ki tu dau cua SBD
             province_code_key = row[0][:2]
             province = self.province_code.get(province_code_key)
             score = 0
             count = 0
+            # duyet qua cac o tren mot hang ke tu sau o SBD
             for i in range(1,10,1):
                 str(row[i])
+                # kiem tra xem thi sinh thi mon đó hay khong
                 if row[i] != '':
                     score += float(row[i])
                     count+=1
             if count > 0:
                 score /= count
+            # nếu chưa thực hiện tính điểm cho thí sinh nào trong danh sách điểm của tỉnh đó
             if province not in province_scores:
-                province_scores[province] = []
+                # tạo ra cho value của khoá province_score là một danh sách điểm rỗng
+                province_scores[province] = [] 
+            # sau đó thêm điểm của từng thí sinh vào
             province_scores[province].append(score)
+        # sau khi kết thúc vòng for ta thu được danh một item với key là tỉnh và value là list chứa đtb của từng thí sinh
+        # tính đtb cho một tỉnh sau đó gán vào key province cho tỉnh đó trong dict
         avg_by_province = {province: sum(scores) / len(scores) for province, scores in province_scores.items()}
         print("\nĐiểm trung bình từng tỉnh thành:")
         for province, avg_score in avg_by_province.items():
@@ -160,38 +170,37 @@ class CRUD:
     def find_top_scorer_per_group(self):
         with open(self.file_path, mode='r', newline='') as csv_file:
             reader = csv.reader(csv_file)
+            # lấy hàng tiêu đề
             header = next(reader)
+            # chuyển hàng tiêu đề thành kiểu list
             header = list(header)
             data = [row for row in reader]
+        # duyệt qua từng khối
         for group, subjects in self.groups.items():
             top_scorer = None
             max_score = -1
             top_scores = {}
             
+            # duyệt qua từng hàng dữ liệu để tìm điểm cao nhất
             for row in data:
-                # Tính tổng điểm của từng khối
                 total_score = 0
                 count_score = 0
-                for var in subjects:
+                for subject in subjects:
+                    #duyệt qua tiêu đề để tìm chỉ số cho môn đó
                     for j in range (len(header)):
-                        if var == header[j] and row[j] != '':
+                        if subject == header[j] and row[j] != '':
                             total_score += float(row[j])
-                            count_score+=1
+                            count_score += 1
 
                 # Nếu tổng điểm cao hơn, cập nhật thông tin thủ khoa
                 if total_score > max_score and count_score == len(subjects):
                     max_score = total_score
                     top_scorer = row[0]
-                    top_scores = {
-                        subject: row[header.index(subject)]
-                        for subject in subjects if subject in header and row[header.index(subject)] != ''
-                    }
+                    for subject in subjects:
+                        if subject in header and row[header.index(subject) != '']:
+                            top_scores[subject] = row[header.index(subject)]
 
             # In kết quả của thủ khoa
             if top_scorer:
                 scores_str = ', '.join([f"{subject}: {top_scores.get(subject, 'N/A')}" for subject in subjects])
                 print(f"Thủ khoa khối {group}: SBD: {top_scorer}, Tổng điểm: {max_score:.2f}, Điểm chi tiết: {scores_str}")
-
-test = CRUD("diem_thi_thpt_2024_QG.csv")
-# test.avg_score()
-test.find_top_scorer_per_group()
