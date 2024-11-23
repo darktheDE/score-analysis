@@ -2,7 +2,7 @@ import CRUD
 
 # code test CRUD
 choose = -1
-file_path = "score-analysis\\diem_thi_thpt_2024_QG.csv"
+file_path = "diem_thi_thpt_2024_QG.csv"
 crud_instance = CRUD.CRUD(file_path)
 
 while(choose != 0):
@@ -24,7 +24,7 @@ while(choose != 0):
             check_number = True
             check_string = True
             score_float = 0
-            while(check_number or check_string):
+            while check_number or check_string:
                 score = input(f"Nhập điểm thi môn {subject} (-1 nếu không thi môn đó): ")
                 check_number = False
                 check_string = False
@@ -41,6 +41,7 @@ while(choose != 0):
                     if score_float < -1 or score_float > 10:
                         print("Điểm thi không hợp lệ, vui lòng nhập lại!")
                         check_number = True
+
             if(score_float == -1):
                 scores_input[subject] = ''
             else:
@@ -68,6 +69,7 @@ while(choose != 0):
                 if sbd_input == row[0]:
                     check = False
                     break
+                
             if check == False:
                 subject_input = input("Nhập tên môn học cần cập nhật: ")
                 score = ""
@@ -90,6 +92,7 @@ while(choose != 0):
                         if score_float < -1 or score_float > 10:
                             print("Điểm thi không hợp lệ, vui lòng nhập lại!")
                             check_number = True
+                            
             if check == True:
                 print("Số báo danh không hợp lệ, vui lòng nhập lại")
         crud_instance.update_score(sbd_input, subject_input, score_float)
@@ -110,16 +113,12 @@ while(choose != 0):
         print(f"Xóa thông tin thí sinh {sbd_input} thành công!")
         crud_instance.delete_score(sbd_input)
         
-
     elif choose == 5:
         crud_instance.avg_score()
-
     elif choose == 6:
         crud_instance.find_top_scorer_per_group()
-
     elif(choose == 0):
         break
-
     else:
         print("\nLựa chọn không hợp lệ, vui lòng đọc menu và lựa chọn lại!")
 
