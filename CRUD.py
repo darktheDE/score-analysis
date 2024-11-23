@@ -76,131 +76,145 @@ class CRUD:
             "C00": ["ngu_van", "lich_su", "dia_li"],
             "D01": ["ngu_van", "toan", "ngoai_ngu"],
         }
-    def add_score(self, sbd ,scores,ma_ngoai_ngu):
-        # giả sử ban đầu file csv chỉ có header cho cột và hàng là sbd và tên của từng môn học
-        scores_list = [scores.get(subject) for subject in self.subjects] # làm khóa chính để truy cập đến điểm của từng môn
+
+
+    def add_score(self, sbd ,scores, ma_ngoai_ngu):
+        scores_list = [scores.get(subject) for subject in self.subjects]
         with open(self.file_path, mode = 'a', newline='') as csv_file:
-            # viết thêm vào file csv mode a = mode append
             writer = csv.writer(csv_file)
             row = [sbd] + scores_list + [ma_ngoai_ngu]
-            writer.writerow(row) # viết thêm dòng mới vào
+            writer.writerow(row)
+
 
     def read_score(self): 
         scores  = []
         with open(self.file_path, mode = 'r', newline='') as csv_file:
             reader = csv.reader(csv_file)
-            next(reader) # bo qua dong dau tien, vi dong nay chi chua tieu de
+            next(reader)
             for row in reader:
-                sbd = row[0] # row[i] tức là duyệt qua các phần tử thứ i trong file csv trên từng dòng
+                sbd = row[0]
                 score_dict = {}
                 j = 1
                 for subject in self.subjects:
-                    score_dict[subject] = row[j] # gán điểm cho từng môn theo từng khóa chính
+                    score_dict[subject] = row[j]
                     j+=1
                 ma_ngoai_ngu = row[-1]
                 scores.append((sbd, score_dict,ma_ngoai_ngu))
         return scores
     
-    def update_score(self, sbd, subject, new_score): # cap nhat diem cua mot mon hoc cu the
+
+    def update_score(self, sbd, subject, new_score):
         data = []
         with open(self.file_path, mode = 'r', newline = '') as csv_file:
-            reader = csv.reader(csv_file) #csv.reader chi tra ve iterator 
-            data = list(reader) # chuyển file csv thành 1 list các phần tử mà mỗi phần tử chính là 1 dòng
+            reader = csv.reader(csv_file)
+            data = list(reader)
         with open(self.file_path, mode = 'w', newline = '') as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow(data[0]) # ghi lại dòng chứa tiêu đề vào file mới
+            writer.writerow(data[0])
             for row in data[1:]:
-                if row[0] == sbd: # neu row[0] bang sbd can cap nhat diem thi cap nhat lai diem
+                if row[0] == sbd:
                     if subject in self.subjects:
-                        index_update = self.subjects.index(subject) + 1 # lấy chỉ số của môn cần cập nhật (cần cộng thêm 1 vì khóa chính không chứa cột sbd)
+                        index_update = self.subjects.index(subject) + 1
                         row[index_update] = new_score
                         writer.writerow(row)
                 else:
-                    # nếu row[0] không khớp với sbd, ghi dòng đó lại vào file mà không thay đổi.
                     writer.writerow(row)
 
-    def delete_score(self, sbd): # xoa hoc sinh theo sbd
+
+    def delete_score(self, sbd):
         data = []
-        with open(self.file_path, mode = 'r', newline = '') as csv_file: # doc du lieu du file vao
+        with open(self.file_path, mode = 'r', newline = '') as csv_file:
             reader = csv.reader(csv_file)
             data = list(reader)
-        with open(self.file_path, mode = 'w', newline = '') as csv_file: # ghi de du lieu vao trong file
+        with open(self.file_path, mode = 'w', newline = '') as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow(data[0]) # ghi lại dòng chứa tiêu đề vào file mới
+            writer.writerow(data[0])
             for row in data[1:]:
                 if row[0] != sbd:
                     writer.writerow(row)
 
+
     def avg_score(self):
         with open(self.file_path, mode = 'r', newline='') as csv_file:
             reader = csv.reader(csv_file)
-            # bo qua dong dau tien
+            # Bỏ qua dòng tiêu đề
             next(reader)
+            # Tạo list data là các dòng dữ liệu
             data = [row for row in reader]
+
+        # Tạo dict để lưu kết quả cho mỗi items với key tỉnh và value là đtb của tỉnh
         province_scores = {}
-        # duyet qua tung dong trong data
+
         for row in data:
-            # lay 2 ki tu dau cua SBD
+            # Lấy mã tỉnh của từng thí sinh 
             province_code_key = row[0][:2]
+            # Xác định tỉnh thông qua mã tỉnh
             province = self.province_code.get(province_code_key)
             score = 0
             count = 0
-            # duyet qua cac o tren mot hang ke tu sau o SBD
-            for i in range(1,10,1):
+
+            for i in range(1,10):
                 str(row[i])
-                # kiem tra xem thi sinh thi mon đó hay khong
+                # Nếu điểm thi môn i khác rỗng -> tính tổng điểm / số lượng môn
                 if row[i] != '':
                     score += float(row[i])
                     count+=1
+
             if count > 0:
                 score /= count
-            # nếu chưa thực hiện tính điểm cho thí sinh nào trong danh sách điểm của tỉnh đó
+            # Nếu tỉnh không nằm trong ds điểm từng tỉnh -> tạo value mới cho tỉnh đó là một list điểm rỗng
             if province not in province_scores:
-                # tạo ra cho value của khoá province_score là một danh sách điểm rỗng
                 province_scores[province] = [] 
-            # sau đó thêm điểm của từng thí sinh vào
+            # Nếu đã được tạo danh sách đtb của từng thí sinh tỉnh đó -> tiến hành thêm đtb của thí sinh kế tiếp
             province_scores[province].append(score)
-        # sau khi kết thúc vòng for ta thu được danh một item với key là tỉnh và value là list chứa đtb của từng thí sinh
-        # tính đtb cho một tỉnh sau đó gán vào key province cho tỉnh đó trong dict
+
+        # Tạo dict chứa các item với key là tên tình và value là đtb của từng tỉnh
         avg_by_province = {province: sum(scores) / len(scores) for province, scores in province_scores.items()}
         print("\nĐiểm trung bình từng tỉnh thành:")
         for province, avg_score in avg_by_province.items():
             print(f"{province}: {avg_score:.2f}")
 
+
     def find_top_scorer_per_group(self):
         with open(self.file_path, mode='r', newline='') as csv_file:
             reader = csv.reader(csv_file)
-            # lấy hàng tiêu đề
+            # Lấy hàng tiêu đề và trỏ qua dòng tiếp theo
             header = next(reader)
-            # chuyển hàng tiêu đề thành kiểu list
             header = list(header)
+            # Tạo list data chứa các dòng dữ liệu
             data = [row for row in reader]
-        # duyệt qua từng khối
-        for group, subjects in self.groups.items():
+
+
+        # Duyệt qua từng khối thi
+        for group, group_subjects in self.groups.items():
+            # SBD của thủ khoa
             top_scorer = None
+            # Điểm của thủ khoa
             max_score = -1
+            # Dict chứa các item với key là môn thi và value là điểm thi của môn đó
             top_scores = {}
             
-            # duyệt qua từng hàng dữ liệu để tìm điểm cao nhất
             for row in data:
                 total_score = 0
                 count_score = 0
-                for subject in subjects:
-                    #duyệt qua tiêu đề để tìm chỉ số cho môn đó
+                # Duyệt qua các môn thi trong khối thi đó
+                for subject in group_subjects:
                     for j in range (len(header)):
+                        # Nếu môn thi đó có trong header và điểm thi môn đó của thi sinh khác rỗng
                         if subject == header[j] and row[j] != '':
                             total_score += float(row[j])
                             count_score += 1
 
-                # Nếu tổng điểm cao hơn, cập nhật thông tin thủ khoa
-                if total_score > max_score and count_score == len(subjects):
+                # Kiểm tra nếu điểm thi của thí sinh khối đó cao hơn thủ khoa khối đó hiện tại -> cập nhật thủ khoa mới
+                if total_score > max_score and count_score == len(group_subjects):
                     max_score = total_score
                     top_scorer = row[0]
-                    for subject in subjects:
+                    for subject in group_subjects:
                         if subject in header and row[header.index(subject) != '']:
+                            # Thêm môn đó vào dict chứa các item với key là điểm thi 1 môn trong khối và value là điểm thi môn đố
                             top_scores[subject] = row[header.index(subject)]
 
-            # In kết quả của thủ khoa
+            # Nếu tồn tại thủ khoa khối đó -> In ra màn hình
             if top_scorer:
-                scores_str = ', '.join([f"{subject}: {top_scores.get(subject, 'N/A')}" for subject in subjects])
+                scores_str = ', '.join([f"{subject}: {top_scores.get(subject, 'N/A')}" for subject in group_subjects])
                 print(f"Thủ khoa khối {group}: SBD: {top_scorer}, Tổng điểm: {max_score:.2f}, Điểm chi tiết: {scores_str}")
