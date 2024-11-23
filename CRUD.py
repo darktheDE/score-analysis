@@ -78,7 +78,18 @@ class CRUD:
         }
 
 
-    def add_score(self, sbd ,scores, ma_ngoai_ngu):
+    def add_score(self, sbd, scores, ma_ngoai_ngu):
+        """
+        Hàm thêm điểm cho một thí sinh mới
+
+        Args:
+            sbd(string): Số báo danh cho thí sinh cần thêm
+            scores(dictionary): Chứa các item với key là tên môn thi và value là điểm thi
+            ma_ngoai_ngu(string): Mã ngoại ngữ mà thí sinh lựa chọn thi
+
+        Returns:
+            (none)
+        """
         scores_list = [scores.get(subject) for subject in self.subjects]
         with open(self.file_path, mode = 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
@@ -87,6 +98,15 @@ class CRUD:
 
 
     def read_score(self): 
+        """
+        Hàm đọc dữ liệu điểm thi từ file csv
+
+        Args:
+            (none)
+        
+        Returns:
+            list: chứa danh sách các dòng dữ liệu được đọc từ file
+        """
         scores  = []
         with open(self.file_path, mode = 'r', newline='') as csv_file:
             reader = csv.reader(csv_file)
@@ -104,6 +124,17 @@ class CRUD:
     
 
     def update_score(self, sbd, subject, new_score):
+        """
+        Hàm cập nhật điểm thi cho một thí sinh dựa vào số báo danh của thí sinh đó
+
+        Args:
+            sbd(string): Số báo danh của thí sinh cần cập nhật điểm thi
+            subject(string): Tên môn học cần sửa đổi điểm
+            new_score(float): Điểm thi mới cần cập nhật cho môn học đó
+
+        Returns:
+            (none)
+        """
         data = []
         with open(self.file_path, mode = 'r', newline = '') as csv_file:
             reader = csv.reader(csv_file)
@@ -122,6 +153,15 @@ class CRUD:
 
 
     def delete_score(self, sbd):
+        """
+        Hàm xoá toàn bộ điểm thi dựa vào số báo danh của thí sinh đó
+
+        Args:
+            sbd(string): Số báo danh của thí sinh cần xoá điểm thi
+
+        Returns:
+            (none)
+        """
         data = []
         with open(self.file_path, mode = 'r', newline = '') as csv_file:
             reader = csv.reader(csv_file)
@@ -135,6 +175,15 @@ class CRUD:
 
 
     def avg_score(self):
+        """
+        Hàm tính điểm trung bình cho từng tỉnh thành
+
+        Args:
+            (none)
+
+        Returns:
+            (none)
+        """
         with open(self.file_path, mode = 'r', newline='') as csv_file:
             reader = csv.reader(csv_file)
             # Bỏ qua dòng tiêu đề
@@ -176,6 +225,15 @@ class CRUD:
 
 
     def find_top_scorer_per_group(self):
+        """
+        Hàm tìm thủ khoa toàn quốc cho từng khối thi
+
+        Args:
+            (none)
+
+        Returns:
+            (none)
+        """
         with open(self.file_path, mode='r', newline='') as csv_file:
             reader = csv.reader(csv_file)
             # Lấy hàng tiêu đề và trỏ qua dòng tiếp theo
