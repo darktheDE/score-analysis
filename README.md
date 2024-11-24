@@ -1,7 +1,7 @@
 # 🏆 National High School Exam Score Analysis (using HCMC data)
 
 ## 📖 Overview
-This project is a **Python-based data analysis and visualization tool** designed to analyze the National High School Exam scores using a dataset from **Ho Chi Minh City (HCMC)**. The main goal is to process and visualize the data effectively, providing insights into **student performance patterns, statistical distributions,** and trends that can aid educators and policymakers.
+This project is a **Python-based data analysis and visualization tool** designed to analyze the National High School Exam scores using a dataset from **Ho Chi Minh City (HCMC)** in 2 years 2023 and 2024. The main goal is to process and visualize the data effectively, providing insights into **student performance patterns, statistical distributions,** and trends that can aid educators and policymakers, analysis and compare between 2 years.
 
 ## 📁 Project Structure
 The project is organized into several main files and directories:
