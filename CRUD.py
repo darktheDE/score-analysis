@@ -4,71 +4,7 @@ class CRUD:
     def __init__(self, file_path):
         self.file_path = file_path
         self.subjects = ["toan", "ngu_van", "ngoai_ngu", "vat_li", "hoa_hoc", "sinh_hoc", "lich_su", "dia_li", "gdcd"]
-        self.province_code = {
-            "01": "Hà Nội",
-            "02": "TP. Hồ Chí Minh",
-            "03": "Hải Phòng",
-            "04": "Đà Nẵng",
-            "05": "Hà Giang",
-            "06": "Cao Bằng",
-            "07": "Lai Châu",
-            "08": "Lào Cai",
-            "09": "Tuyên Quang",
-            "10": "Lạng Sơn",
-            "11": "Bắc Kạn",
-            "12": "Thái Nguyên",
-            "13": "Yên Bái",
-            "14": "Sơn La",
-            "15": "Phú Thọ",
-            "16": "Vĩnh Phúc",
-            "17": "Quảng Ninh",
-            "18": "Bắc Giang",
-            "19": "Bắc Ninh",
-            "21": "Hải Dương",
-            "22": "Hưng Yên",
-            "23": "Hòa Bình",
-            "24": "Hà Nam",
-            "25": "Nam Định",
-            "26": "Thái Bình",
-            "27": "Ninh Bình",
-            "28": "Thanh Hóa",
-            "29": "Nghệ An",
-            "30": "Hà Tĩnh",
-            "31": "Quảng Bình",
-            "32": "Quảng Trị",
-            "33": "Thừa Thiên Huế",
-            "34": "Quảng Nam",
-            "35": "Quảng Ngãi",
-            "36": "Kon Tum",
-            "37": "Bình Định",
-            "38": "Gia Lai",
-            "39": "Phú Yên",
-            "40": "Đắk Lắk",
-            "41": "Khánh Hòa",
-            "42": "Lâm Đồng",
-            "43": "Bình Phước",
-            "44": "Bình Dương",
-            "45": "Ninh Thuận",
-            "46": "Tây Ninh",
-            "47": "Bình Thuận",
-            "48": "Đồng Nai",
-            "49": "Long An",
-            "50": "Đồng Tháp",
-            "51": "An Giang",
-            "52": "Bà Rịa - Vũng Tàu",
-            "53": "Tiền Giang",
-            "54": "Kiên Giang",
-            "55": "Cần Thơ",
-            "56": "Bến Tre",
-            "57": "Vĩnh Long",
-            "58": "Trà Vinh",
-            "59": "Sóc Trăng",
-            "60": "Bạc Liêu",
-            "61": "Cà Mau",
-            "62": "Điện Biên",
-            "63": "Đắk Nông",
-            "64": "Hậu Giang"
-        }
+        self.province_code = {"02": "TP. Hồ Chí Minh"}
         self.groups = {
             "A00": ["toan", "vat_li", "hoa_hoc"],
             "A01": ["toan", "vat_li", "ngoai_ngu"],
@@ -78,14 +14,13 @@ class CRUD:
         }
 
 
-    def add_score(self, sbd, scores, ma_ngoai_ngu):
+    def add_score(self, sbd, scores):
         """
         Hàm thêm điểm cho một thí sinh mới
 
         Args:
             sbd(string): Số báo danh cho thí sinh cần thêm
             scores(dictionary): Chứa các item với key là tên môn thi và value là điểm thi
-            ma_ngoai_ngu(string): Mã ngoại ngữ mà thí sinh lựa chọn thi
 
         Returns:
             (none)
@@ -93,7 +28,7 @@ class CRUD:
         scores_list = [scores.get(subject) for subject in self.subjects]
         with open(self.file_path, mode = 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            row = [sbd] + scores_list + [ma_ngoai_ngu]
+            row = [sbd] + scores_list
             writer.writerow(row)
 
 
@@ -118,8 +53,7 @@ class CRUD:
                 for subject in self.subjects:
                     score_dict[subject] = row[j]
                     j+=1
-                ma_ngoai_ngu = row[-1]
-                scores.append((sbd, score_dict,ma_ngoai_ngu))
+                scores.append((sbd, score_dict))
         return scores
     
 
