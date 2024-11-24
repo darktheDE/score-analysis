@@ -148,6 +148,68 @@ def plot_score_distribution_by_combination(data, combination_code):
     plt.tight_layout(rect=[0, 0, 0.7, 1])
     plt.show()
 
+
+def plot_score_distribution_pie(data, combination_code):
+    subjects = subject_combinations[combination_code]
+    data["combination_score"] = data[subjects].replace(0, pd.NA).sum(axis=1, skipna=True)
+    bins = [0, 15, 24, 30]
+    labels = ["< 15", "15 - 24", ">= 24"]
+    data["score_group"] = pd.cut(data["combination_score"], bins=bins, labels=labels, include_lowest=True)
+    group_counts = data["score_group"].value_counts()
+    plt.figure(figsize=(8, 8))
+    plt.pie(group_counts, labels=group_counts.index, autopct="%1.1f%%", startangle=90, colors=["red", "yellow", "green"])
+    plt.title(f"Tỷ lệ học sinh theo mức điểm tổ hợp {combination_code}")
+    plt.show()
+
+def plot_score_distribution_by_combinations(data, subject_combinations):
+    # Tạo dictionary lưu điểm cao nhất và thấp nhất
+    combination_scores = {"Combination": [], "Max Score": [], "Min Score": []}
+
+    # Tính điểm cao nhất và thấp nhất cho từng tổ hợp
+    for combination, subjects in subject_combinations.items():
+        # Tính tổng điểm tổ hợp
+        data["combination_score"] = data[subjects].replace(0, pd.NA).sum(axis=1, skipna=True)
+
+        # Lấy điểm cao nhất và thấp nhất
+        max_score = data["combination_score"].max()
+        min_score = data["combination_score"].min()
+
+        # Lưu kết quả vào dictionary
+        combination_scores["Combination"].append(combination)
+        combination_scores["Max Score"].append(max_score)
+        combination_scores["Min Score"].append(min_score)
+
+    # Chuyển dictionary thành DataFrame
+    scores_df = pd.DataFrame(combination_scores)
+
+    # Vẽ biểu đồ cột nhóm
+    plt.figure(figsize=(16, 8))
+    bar_width = 0.35
+    x = range(len(scores_df))
+
+    # Vẽ cột Max Score
+    plt.bar(x, scores_df["Max Score"], width=bar_width, label="Điểm cao nhất", color="skyblue")
+
+    # Vẽ cột Min Score
+    plt.bar([i + bar_width for i in x], scores_df["Min Score"], width=bar_width, label="Điểm thấp nhất", color="salmon")
+
+    # Thiết lập trục và nhãn
+    plt.xlabel("Tổ hợp môn", fontsize=12)
+    plt.ylabel("Điểm", fontsize=12)
+    plt.title("Phân phối điểm cao/thấp giữa các tổ hợp", fontsize=16)
+    plt.xticks([i + bar_width / 2 for i in x], scores_df["Combination"], rotation=45)
+    plt.legend()
+
+    # Hiển thị biểu đồ
+    plt.tight_layout()
+    plt.show()
+
+
 # Ví dụ gọi hàm
-plot_score_distribution_by_subject(data, "ngu_van")
-plot_score_distribution_by_combination(data, "A01")
+# plot_score_distribution_by_combination(data, "A01")
+
+# plot_score_distribution_by_subject(data, "ngu_van")
+
+# plot_score_distribution_pie(data, "A01")
+
+plot_score_distribution_by_combinations(data, subject_combinations)
