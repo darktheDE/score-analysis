@@ -101,56 +101,9 @@ class CRUD:
                     writer.writerow(row)
 
 
-    def avg_score(self):
-        """
-        Hàm tính điểm trung bình cho từng tỉnh thành
-
-        Args:
-            (none)
-        """
-        with open(self.file_path, mode = 'r', newline='') as csv_file:
-            reader = csv.reader(csv_file)
-            # Bỏ qua dòng tiêu đề
-            next(reader)
-            # Tạo list data là các dòng dữ liệu
-            data = [row for row in reader]
-
-        # Tạo dict để lưu kết quả cho mỗi items với key tỉnh và value là đtb của tỉnh
-        province_scores = {}
-
-        for row in data:
-            # Lấy mã tỉnh của từng thí sinh 
-            province_code_key = row[0][:2]
-            # Xác định tỉnh thông qua mã tỉnh
-            province = self.province_code.get(province_code_key)
-            score = 0
-            count = 0
-
-            for i in range(1,10):
-                str(row[i])
-                # Nếu điểm thi môn i khác rỗng -> tính tổng điểm / số lượng môn
-                if row[i] != '':
-                    score += float(row[i])
-                    count+=1
-
-            if count > 0:
-                score /= count
-            # Nếu tỉnh không nằm trong ds điểm từng tỉnh -> tạo value mới cho tỉnh đó là một list điểm rỗng
-            if province not in province_scores:
-                province_scores[province] = [] 
-            # Nếu đã được tạo danh sách đtb của từng thí sinh tỉnh đó -> tiến hành thêm đtb của thí sinh kế tiếp
-            province_scores[province].append(score)
-
-        # Tạo dict chứa các item với key là tên tình và value là đtb của từng tỉnh
-        avg_by_province = {province: sum(scores) / len(scores) for province, scores in province_scores.items()}
-        print("\nĐiểm trung bình từng tỉnh thành:")
-        for province, avg_score in avg_by_province.items():
-            print(f"{province}: {avg_score:.2f}")
-
-
     def find_top_scorer_per_group(self):
         """
-        Hàm tìm thủ khoa toàn quốc cho từng khối thi
+        Hàm tìm thủ khoa TPHCM cho từng khối thi
 
         Args:
             (none)
@@ -197,6 +150,7 @@ class CRUD:
             if top_scorer:
                 scores_str = ', '.join([f"{subject}: {top_scores.get(subject, 'N/A')}" for subject in group_subjects])
                 print(f"Thủ khoa khối {group}: SBD: {top_scorer}, Tổng điểm: {max_score:.2f}, Điểm chi tiết: {scores_str}")
+                
     def sort_by_subject(self, subject, reversed):
         """
         Hàm sắp xếp danh sách thí sinh theo điểm tăng dần của một môn học và in ra toàn bộ thông tin
