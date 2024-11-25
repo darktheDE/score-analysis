@@ -366,10 +366,10 @@ def plot_score_distribution_by_combinations(data, subject_combinations):
 
 
 # Ví dụ gọi hàm
-# plot_score_distribution_by_combination(data2024, "A01", subject_combinations)
+plot_score_distribution_by_combination(data2024, "A01", subject_combinations)
 
 plot_score_distribution_by_subject(data2024, "ngu_van")
 
-# plot_score_distribution_pie(data2023, "A01", subject_combinations)
+plot_score_distribution_pie(data2023, "A01", subject_combinations)
 
-# plot_score_distribution_by_combinations(data2023, subject_combinations)
+plot_score_distribution_by_combinations(data2023, subject_combinations)
