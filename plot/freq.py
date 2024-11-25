@@ -1,8 +1,10 @@
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 
-data2023 = pd.read_csv('diem2023.csv')
-data2024 = pd.read_csv('diem2024.csv')
+data2023 = pd.read_csv("diem2023.csv")
+data2024 = pd.read_csv("diem2024.csv")
+
 
 def freqSub(data1, data2, year1, year2):
     """
@@ -22,31 +24,45 @@ def freqSub(data1, data2, year1, year2):
     """
     # Liệt kê các môn học và tên tiếng Việt tương ứng
     subjects = {
-        'toan': 'Toán',
-        'ngu_van': 'Ngữ văn',
-        'ngoai_ngu': 'Ngoại ngữ',
-        'vat_li': 'Vật lý',
-        'hoa_hoc': 'Hóa học',
-        'sinh_hoc': 'Sinh học',
-        'lich_su': 'Lịch sử',
-        'dia_li': 'Địa lý',
-        'gdcd': 'GDCD'
+        "toan": "Toán",
+        "ngu_van": "Ngữ văn",
+        "ngoai_ngu": "Ngoại ngữ",
+        "vat_li": "Vật lý",
+        "hoa_hoc": "Hóa học",
+        "sinh_hoc": "Sinh học",
+        "lich_su": "Lịch sử",
+        "dia_li": "Địa lý",
+        "gdcd": "GDCD",
     }
 
+    # Tạo DataFrame mới chứa điểm và năm
+    data1["Year"] = year1
+    data2["Year"] = year2
+    combined_data = pd.concat([data1, data2], ignore_index=True)
+
     # Vẽ biểu đồ histogram cho từng môn
-    plt.figure(figsize=(18, 12))  # Tăng kích thước hình
-    for i, (subject, vietnamese_name) in enumerate(subjects.items(), 1):
-        plt.subplot(3, 3, i)
-        data1[subject].dropna().plot(kind='hist', bins=10, alpha=0.5, label=f'{year1}', grid=True)
-        data2[subject].dropna().plot(kind='hist', bins=10, alpha=0.5, label=f'{year2}', grid=True)
-        plt.xlabel('Điểm')
-        plt.ylabel('Tần suất')
-        plt.title(vietnamese_name)  # Hiển thị tên tiếng Việt của môn học
-        plt.legend()
-        plt.tight_layout(pad=5.0)  # Tăng khoảng cách giữa các subplot
-    
-    plt.suptitle('Phân Bố Điểm Các Môn THPTQG', fontsize=16, y = 1)
+    fig, axes = plt.subplots(3, 3, figsize=(18, 12))
+    fig.suptitle("Phân Bố Điểm Các Môn THPTQG", fontsize=16, y=1)
+
+    for ax, (subject, vietnamese_name) in zip(axes.flatten(), subjects.items()):
+        sns.histplot(
+            data=combined_data,
+            x=subject,
+            hue="Year",
+            bins=20,
+            kde=False,
+            ax=ax,
+            palette="pastel",
+            alpha=0.6,
+        )
+        ax.set_title(vietnamese_name)
+        ax.set_xlabel("Điểm")
+        ax.set_ylabel("Tần suất")
+        ax.grid(True)
+
+    plt.tight_layout(pad=3.0)
     plt.show()
+
 
 # Gọi hàm với dữ liệu của năm 2023 và 2024
 freqSub(data2023, data2024, 2023, 2024)
