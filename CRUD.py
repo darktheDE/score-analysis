@@ -192,13 +192,14 @@ class CRUD:
         
         for row in data:
             if row[0] == sbd_target:
+                print("\nThông tin của thí sinh cần tìm kiếm: ")
                 print(row)
                 return
         
         print("Không tìm thấy thông tin thí sinh với số báo danh:", sbd_target)
 
     
-    def find(self,subject, score):
+    def find(self, subject, score):
         """
         Hàm tìm kiếm thông tin các thí sinh thi môn có điểm thi bằng với điểm thi cần tìm
 
@@ -213,8 +214,14 @@ class CRUD:
             reader = csv.reader(csv_file)
             next(reader)
             data = list(reader)
-        
+
         subject_index = self.subjects.index(subject) + 1
+        # Format lại điểm thi các môn là rỗng
+        for row in data:
+            for subject in self.subjects:
+                if row[self.subjects.index(subject) + 1] == '':
+                    row[self.subjects.index(subject) + 1] = 0
+
         print("Thông tin các thí sinh thi môn", self.convert[subject], "có điểm", score, "là:")
         check = True
         for row in data:
