@@ -3,14 +3,18 @@ import requests
 
 # Viết các phần tử lại và đóng dấu xuống dòng (\n) để phân biệt các dòng
 # Lưu ý mở ''' ''' để khởi tạo file text.txt trước, những lần sau đóng lại để tránh ghi đè
-'''with open("text.txt", "w", encoding="utf-8") as file:
-     file.write("sbd,toan,ngu_van,ngoai_ngu,li,hoa,sinh,lich_su,dia_ly,gdcd\n")'''
+with open("text.txt", "w", encoding="utf-8") as file:
+    file.write(
+        "sbd,toan,ngu_van,ngoai_ngu,vat_li,hoa_hoc,sinh_hoc,lich_su,dia_li,gdcd\n"
+    )
 
-for i in range (2001011,2001021):
-    input_id = "0"+str(i)
+for i in range(2000001, 2000021):
+    input_id = "0" + str(i)
 
     # URL của trang web cần lấy mã nguồn
-    url = "https://diemthi.vnexpress.net/index/detail/sbd/"+str(input_id)+"/year/2024"
+    url = (
+        "https://diemthi.vnexpress.net/index/detail/sbd/" + str(input_id) + "/year/2024"
+    )
 
     # Gửi yêu cầu GET và lấy nội dung trang web
     response = requests.get(url)
@@ -39,7 +43,7 @@ for i in range (2001011,2001021):
                 begin = j
             if data[i][j] == ">" and begin is not None:
                 end = j
-                tags.append(data[i][begin:end+1])
+                tags.append(data[i][begin : end + 1])
                 begin = None
         # Loại bỏ các thẻ HTML khỏi dòng
         for tag in tags:
@@ -62,9 +66,9 @@ for i in range (2001011,2001021):
         if data[i] == "Toán":
             index_start = i
         # Sinh học là môn cuối kỳ và ta cần lưu cả điểm của sinh học nên ta sẽ cộng 1
-        if data[i] in ["Sinh học","Giáo dục công dân"]:
-            index_end = i +1 
-    data = data[index_start: index_end+1]
+        if data[i] in ["Sinh học", "Giáo dục công dân"]:
+            index_end = i + 1
+    data = data[index_start : index_end + 1]
 
     # Xóa các \t thừa
     for i in range(len(data)):
@@ -74,22 +78,39 @@ for i in range (2001011,2001021):
     res = []
     # thêm số báo danh vào đầu
     res.append(input_id)
-    #Khảo tạo count để ngoại lệ số báo danh bị lỗi
-    count = 0 
-    #Thêm  các giá tri cần thiết
-    for subject in ["Toán","Ngữ văn","Ngoại ngữ","Vật lý","Hóa học","Sinh học",
-                             "Lịch sử","Địa lý","Giáo dục công dân"]:
+    # Khảo tạo count để ngoại lệ số báo danh bị lỗi
+    count = 0
+    # Thêm  các giá tri cần thiết
+    for subject in [
+        "Toán",
+        "Ngữ văn",
+        "Ngoại ngữ",
+        "Vật lý",
+        "Hóa học",
+        "Sinh học",
+        "Lịch sử",
+        "Địa lý",
+        "Giáo dục công dân",
+    ]:
         if subject in data:
-            res.append(data[data.index(subject) + 1])
+            score = data[data.index(subject) + 1]
+            # Làm gọn điểm số
+            if score.endswith(".00"):
+                score = score[:-3]
+            elif score.endswith("0"):
+                score = score[:-1]
+            res.append(score)
             count += 1
         else:
-            res.append(-1)
+            res.append("")
     if count == 0:
         continue
 
     # Viết các phần tử lại và đóng dấu xuống dòng (\n) để phân biệt các dòng
     with open("text.txt", "a", encoding="utf-8") as file:
-        for line in res:
-            file.write(str(line) + ",")
+        for i in range(len(res)):
+            if i == len(res) - 1:
+                file.write(str(res[i]))
+            else:
+                file.write(str(res[i]) + ",")
         file.write("\n")
-
