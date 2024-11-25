@@ -15,16 +15,31 @@ to_hop_B = ["toan", "hoa_hoc", "sinh_hoc"]
 to_hop_C = ["ngu_van", "lich_su", "dia_li"]
 to_hop_D = ["toan", "ngu_van", "ngoai_ngu"]
 
-
-# Hàm để tính tổng điểm của từng tổ hợp môn
 def tinh_diem_to_hop(df, to_hop):
+    """
+    Tính tổng điểm của từng tổ hợp môn.
+
+    Args:
+        df (pd.DataFrame): Dữ liệu điểm thi với mỗi cột là một môn học và các hàng là điểm của từng học sinh.
+        to_hop (list): Danh sách các môn học thuộc tổ hợp cần tính điểm.
+
+    Returns:
+        pd.Series: Tổng điểm của từng học sinh cho tổ hợp môn.
+    """
     return df[to_hop].sum(axis=1)
 
-
-# Hàm để phân loại điểm theo các khung điểm
 def phan_loai_diem(diem, khoang_diem):
-    return pd.cut(diem, bins=khoang_diem, include_lowest=True, right=False)
+    """
+    Phân loại điểm theo các khung điểm.
 
+    Args:
+        diem (pd.Series): Điểm của các học sinh.
+        khoang_diem (list): Danh sách các khung điểm để phân loại.
+
+    Returns:
+        pd.Categorical: Các điểm được phân loại theo khung điểm.
+    """
+    return pd.cut(diem, bins=khoang_diem, include_lowest=True, right=False)
 
 # Tạo bảng phân loại điểm cho từng tổ hợp môn và từng năm
 to_hop_dict = {
