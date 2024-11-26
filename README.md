@@ -30,8 +30,9 @@ The project is organized into several main files and directories:
 
 ## 🚀 How to Use
 1. Clone the repository.
-2. Run `Main.py` to start the program.
-3. Use the interface (if provided) to load data, perform CRUD operations, and view visualizations.
+2. Run `Main.py` to start the console program.
+3. Run `UI.py` to start the program by GUI.
+4. Use the interface (if provided) to load data, perform CRUD operations, and view visualizations.
 
 ## 🔧 Future Work
 - Add more data processing features, such as correlation analysis with demographic data.

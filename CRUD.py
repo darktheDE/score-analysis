@@ -4,71 +4,7 @@ class CRUD:
     def __init__(self, file_path):
         self.file_path = file_path
         self.subjects = ["toan", "ngu_van", "ngoai_ngu", "vat_li", "hoa_hoc", "sinh_hoc", "lich_su", "dia_li", "gdcd"]
-        self.province_code = {
-            "01": "Hà Nội",
-            "02": "TP. Hồ Chí Minh",
-            "03": "Hải Phòng",
-            "04": "Đà Nẵng",
-            "05": "Hà Giang",
-            "06": "Cao Bằng",
-            "07": "Lai Châu",
-            "08": "Lào Cai",
-            "09": "Tuyên Quang",
-            "10": "Lạng Sơn",
-            "11": "Bắc Kạn",
-            "12": "Thái Nguyên",
-            "13": "Yên Bái",
-            "14": "Sơn La",
-            "15": "Phú Thọ",
-            "16": "Vĩnh Phúc",
-            "17": "Quảng Ninh",
-            "18": "Bắc Giang",
-            "19": "Bắc Ninh",
-            "21": "Hải Dương",
-            "22": "Hưng Yên",
-            "23": "Hòa Bình",
-            "24": "Hà Nam",
-            "25": "Nam Định",
-            "26": "Thái Bình",
-            "27": "Ninh Bình",
-            "28": "Thanh Hóa",
-            "29": "Nghệ An",
-            "30": "Hà Tĩnh",
-            "31": "Quảng Bình",
-            "32": "Quảng Trị",
-            "33": "Thừa Thiên Huế",
-            "34": "Quảng Nam",
-            "35": "Quảng Ngãi",
-            "36": "Kon Tum",
-            "37": "Bình Định",
-            "38": "Gia Lai",
-            "39": "Phú Yên",
-            "40": "Đắk Lắk",
-            "41": "Khánh Hòa",
-            "42": "Lâm Đồng",
-            "43": "Bình Phước",
-            "44": "Bình Dương",
-            "45": "Ninh Thuận",
-            "46": "Tây Ninh",
-            "47": "Bình Thuận",
-            "48": "Đồng Nai",
-            "49": "Long An",
-            "50": "Đồng Tháp",
-            "51": "An Giang",
-            "52": "Bà Rịa - Vũng Tàu",
-            "53": "Tiền Giang",
-            "54": "Kiên Giang",
-            "55": "Cần Thơ",
-            "56": "Bến Tre",
-            "57": "Vĩnh Long",
-            "58": "Trà Vinh",
-            "59": "Sóc Trăng",
-            "60": "Bạc Liêu",
-            "61": "Cà Mau",
-            "62": "Điện Biên",
-            "63": "Đắk Nông",
-            "64": "Hậu Giang"
-        }
+        self.province_code = {"02": "TP. Hồ Chí Minh"}
         self.groups = {
             "A00": ["toan", "vat_li", "hoa_hoc"],
             "A01": ["toan", "vat_li", "ngoai_ngu"],
@@ -76,24 +12,22 @@ class CRUD:
             "C00": ["ngu_van", "lich_su", "dia_li"],
             "D01": ["ngu_van", "toan", "ngoai_ngu"],
         }
+        self.convert = {"toan":"toán", "ngu_van" : "ngữ văn", "ngoai_ngu": "ngoại ngữ", "vat_li":"vật lí", "hoa_hoc": "hóa học",
+                        "sinh_hoc":"sinh học", "lich_su":"lịch sử","dia_li": "địa lí", "gdcd": "giáo dục công dân"
+        }
 
-
-    def add_score(self, sbd, scores, ma_ngoai_ngu):
+    def add_score(self, sbd, scores):
         """
         Hàm thêm điểm cho một thí sinh mới
 
         Args:
             sbd(string): Số báo danh cho thí sinh cần thêm
             scores(dictionary): Chứa các item với key là tên môn thi và value là điểm thi
-            ma_ngoai_ngu(string): Mã ngoại ngữ mà thí sinh lựa chọn thi
-
-        Returns:
-            (none)
         """
         scores_list = [scores.get(subject) for subject in self.subjects]
         with open(self.file_path, mode = 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            row = [sbd] + scores_list + [ma_ngoai_ngu]
+            row = [sbd] + scores_list
             writer.writerow(row)
 
 
@@ -118,8 +52,7 @@ class CRUD:
                 for subject in self.subjects:
                     score_dict[subject] = row[j]
                     j+=1
-                ma_ngoai_ngu = row[-1]
-                scores.append((sbd, score_dict,ma_ngoai_ngu))
+                scores.append((sbd, score_dict))
         return scores
     
 
@@ -131,9 +64,6 @@ class CRUD:
             sbd(string): Số báo danh của thí sinh cần cập nhật điểm thi
             subject(string): Tên môn học cần sửa đổi điểm
             new_score(float): Điểm thi mới cần cập nhật cho môn học đó
-
-        Returns:
-            (none)
         """
         data = []
         with open(self.file_path, mode = 'r', newline = '') as csv_file:
@@ -158,9 +88,6 @@ class CRUD:
 
         Args:
             sbd(string): Số báo danh của thí sinh cần xoá điểm thi
-
-        Returns:
-            (none)
         """
         data = []
         with open(self.file_path, mode = 'r', newline = '') as csv_file:
@@ -174,64 +101,11 @@ class CRUD:
                     writer.writerow(row)
 
 
-    def avg_score(self):
-        """
-        Hàm tính điểm trung bình cho từng tỉnh thành
-
-        Args:
-            (none)
-
-        Returns:
-            (none)
-        """
-        with open(self.file_path, mode = 'r', newline='') as csv_file:
-            reader = csv.reader(csv_file)
-            # Bỏ qua dòng tiêu đề
-            next(reader)
-            # Tạo list data là các dòng dữ liệu
-            data = [row for row in reader]
-
-        # Tạo dict để lưu kết quả cho mỗi items với key tỉnh và value là đtb của tỉnh
-        province_scores = {}
-
-        for row in data:
-            # Lấy mã tỉnh của từng thí sinh 
-            province_code_key = row[0][:2]
-            # Xác định tỉnh thông qua mã tỉnh
-            province = self.province_code.get(province_code_key)
-            score = 0
-            count = 0
-
-            for i in range(1,10):
-                str(row[i])
-                # Nếu điểm thi môn i khác rỗng -> tính tổng điểm / số lượng môn
-                if row[i] != '':
-                    score += float(row[i])
-                    count+=1
-
-            if count > 0:
-                score /= count
-            # Nếu tỉnh không nằm trong ds điểm từng tỉnh -> tạo value mới cho tỉnh đó là một list điểm rỗng
-            if province not in province_scores:
-                province_scores[province] = [] 
-            # Nếu đã được tạo danh sách đtb của từng thí sinh tỉnh đó -> tiến hành thêm đtb của thí sinh kế tiếp
-            province_scores[province].append(score)
-
-        # Tạo dict chứa các item với key là tên tình và value là đtb của từng tỉnh
-        avg_by_province = {province: sum(scores) / len(scores) for province, scores in province_scores.items()}
-        print("\nĐiểm trung bình từng tỉnh thành:")
-        for province, avg_score in avg_by_province.items():
-            print(f"{province}: {avg_score:.2f}")
-
-
     def find_top_scorer_per_group(self):
         """
-        Hàm tìm thủ khoa toàn quốc cho từng khối thi
+        Hàm tìm thủ khoa TPHCM cho từng khối thi
 
         Args:
-            (none)
-
-        Returns:
             (none)
         """
         with open(self.file_path, mode='r', newline='') as csv_file:
@@ -276,3 +150,85 @@ class CRUD:
             if top_scorer:
                 scores_str = ', '.join([f"{subject}: {top_scores.get(subject, 'N/A')}" for subject in group_subjects])
                 print(f"Thủ khoa khối {group}: SBD: {top_scorer}, Tổng điểm: {max_score:.2f}, Điểm chi tiết: {scores_str}")
+                
+    def sort_by_subject(self, subject, reversed):
+        """
+        Hàm sắp xếp danh sách thí sinh theo điểm tăng dần của một môn học và in ra toàn bộ thông tin
+
+        Args:
+            subject (string): Tên môn học để sắp xếp
+            reversed(boolean): Biến để xác định sắp xếp tăng dần hay giảm dần
+        """
+        if subject not in self.subjects:
+            print(f"Môn học '{subject}' không hợp lệ. Vui lòng chọn trong danh sách: {self.subjects}")
+            return
+
+        with open(self.file_path, mode='r', newline='') as csv_file:
+            reader = csv.reader(csv_file)
+            next(reader)
+            data = list(reader)
+
+        # Lấy index của môn học cần sắp xếp
+        subject_index = self.subjects.index(subject) + 1
+
+        sorted_data = sorted(data, key=lambda row: float(row[subject_index]) if row[subject_index] != '' else 0, reverse=reversed)
+
+        # In kết quả sắp xếp ra màn hình
+        print(f"\nDanh sách sắp xếp theo điểm môn '{self.convert[subject]}:")
+        for row in sorted_data:
+            print(row)
+    
+    def find_by_sbd(self, sbd_target):
+        """
+        Hàm tìm kiếm thông tin thí sinh theo số báo danh
+
+        Args:
+            sbd_target(string): Truyền vào số báo danh của thí sinh cần tìm kiếm
+        """
+        with open(self.file_path, mode='r', newline='') as csv_file:
+            reader = csv.reader(csv_file)
+            next(reader)
+            data = list(reader)
+        
+        for row in data:
+            if row[0] == sbd_target:
+                print("\nThông tin của thí sinh cần tìm kiếm: ")
+                print(row)
+                return
+        
+        print("Không tìm thấy thông tin thí sinh với số báo danh:", sbd_target)
+
+    
+    def find(self, subject, score):
+        """
+        Hàm tìm kiếm thông tin các thí sinh thi môn có điểm thi bằng với điểm thi cần tìm
+
+        Args:
+            subject(string): Môn thi cần tìm:
+            score(float): Điểm thi cần tìm
+        """
+        if subject not in self.subjects:
+            print(f"Môn học '{subject}' không hợp lệ. Vui lòng chọn trong danh sách: {self.subjects}")
+            return
+        with open(self.file_path, mode='r', newline='') as csv_file:
+            reader = csv.reader(csv_file)
+            next(reader)
+            data = list(reader)
+
+        subject_index = self.subjects.index(subject) + 1
+        # Format lại điểm thi các môn là rỗng
+        for row in data:
+            for subject in self.subjects:
+                if row[self.subjects.index(subject) + 1] == '':
+                    row[self.subjects.index(subject) + 1] = 0
+
+        print("Thông tin các thí sinh thi môn", self.convert[subject], "có điểm", score, "là:")
+        check = True
+        for row in data:
+            if row[subject_index] != '':
+                if float(row[subject_index]) == score:
+                    check = False
+                    print(row)
+        
+        if check == True:
+            print("Không tìm thấy thông tin thí sinh thi môn", self.convert[subject], "có điểm", score)
