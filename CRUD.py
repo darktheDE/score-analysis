@@ -1,16 +1,17 @@
 import csv
 
 class CRUD:
+    """
+    Class với các phương thức có thể thao tác với dữ liệu trên file
+    """
     def __init__(self, file_path):
         self.file_path = file_path
         self.subjects = ["toan", "ngu_van", "ngoai_ngu", "vat_li", "hoa_hoc", "sinh_hoc", "lich_su", "dia_li", "gdcd"]
         self.province_code = {"02": "TP. Hồ Chí Minh"}
         self.groups = {
             "A00": ["toan", "vat_li", "hoa_hoc"],
-            "A01": ["toan", "vat_li", "ngoai_ngu"],
             "B00": ["toan", "hoa_hoc", "sinh_hoc"],
             "C00": ["ngu_van", "lich_su", "dia_li"],
-            "D01": ["ngu_van", "toan", "ngoai_ngu"],
         }
         self.convert = {"toan":"toán", "ngu_van" : "ngữ văn", "ngoai_ngu": "ngoại ngữ", "vat_li":"vật lí", "hoa_hoc": "hóa học",
                         "sinh_hoc":"sinh học", "lich_su":"lịch sử","dia_li": "địa lí", "gdcd": "giáo dục công dân"
@@ -114,7 +115,7 @@ class CRUD:
             header = next(reader)
             header = list(header)
             # Tạo list data chứa các dòng dữ liệu
-            data = [row for row in reader]
+            data = list(reader)
 
 
         # Duyệt qua từng khối thi
@@ -216,11 +217,6 @@ class CRUD:
             data = list(reader)
 
         subject_index = self.subjects.index(subject) + 1
-        # Format lại điểm thi các môn là rỗng
-        for row in data:
-            for subject in self.subjects:
-                if row[self.subjects.index(subject) + 1] == '':
-                    row[self.subjects.index(subject) + 1] = 0
 
         print("Thông tin các thí sinh thi môn", self.convert[subject], "có điểm", score, "là:")
         check = True
