@@ -80,14 +80,14 @@ def menu(crud):
                 
             crud.add_score(sbd_input, scores_input)
             print("Thêm dữ liệu cho thí sinh mới thành công!")
-            con = input("Nhấn phím bất kì để tiếp tục...")
+            con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
         elif choose == "2":
             temp_list = crud.read_score()
             for row in temp_list:
                 print(row)
             print("\nDữ liệu trong file đã được đọc thành công!")
-            con = input("Nhấn phím bất kì để tiếp tục...")
+            con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
         elif choose == "3":
             sbd_input = ""
@@ -135,7 +135,7 @@ def menu(crud):
 
             crud.update_score(sbd_input, subject_input, score_float)
             print(f"Cập nhật điểm thi môn {crud.convert[subject_input]} thí sinh {sbd_input} thành công!")
-            con = input("Nhấn phím bất kì để tiếp tục...")
+            con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
         elif choose == "4":
             check = True
@@ -152,11 +152,11 @@ def menu(crud):
 
             print(f"\nXóa thông tin thí sinh {sbd_input} thành công!")
             crud.delete_score(sbd_input)
-            con = input("Nhấn phím bất kì để tiếp tục...")
+            con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
         elif choose == '5':
             crud.find_top_scorer_per_group()
-            con = input("Nhấn phím bất kì để tiếp tục...")
+            con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
         elif choose == '6':
             subject_input = input("Nhập tên môn học cần sắp xếp theo điểm thi: ")
@@ -173,7 +173,7 @@ def menu(crud):
                 isDescending = False
 
             crud.sort_by_subject(subject_input, isDescending)
-            con = input("Nhấn phím bất kì để tiếp tục...")
+            con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
         elif choose == '7':
             sbd_input = ""
@@ -183,7 +183,7 @@ def menu(crud):
                     print("Số báo danh không hợp lệ, vui lòng nhập lại theo format của bộ giáo dục!")
                                 
             crud.find_by_sbd(sbd_input)
-            con = input("Nhấn phím bất kì để tiếp tục...")
+            con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
         elif choose == '8':
             subject_input = ''
@@ -202,11 +202,9 @@ def menu(crud):
                     print("\nVui lòng nhập điểm thi không âm!")
                     check_num = True
                 else:
-                    for i in range(len(score_input)):
-                        if isFloat(score_input) == False:
-                            check_abc = True
-                            print("\nVui lòng nhập điểm thi là chữ số!")
-                            break
+                    if isFloat(score_input) == False:
+                        check_abc = True
+                        print("\nVui lòng nhập điểm thi là chữ số!")
                     if check_abc == False:
                         score_float = float(score_input)
                         if score_float > 10:
@@ -214,7 +212,7 @@ def menu(crud):
                             check_num = True
 
             crud.find(subject_input, score_float)
-            con = input("Nhấn phím bất kì để tiếp tục...")
+            con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
         elif choose == "0":
             # Kiểm tra hệ điều hành nt = Windows -> thực hiện clrsc trên terminal

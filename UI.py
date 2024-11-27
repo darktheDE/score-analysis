@@ -149,7 +149,7 @@ def change_content(content):
 
             # Tạo đối tượng CRUD và tìm kiếm sinh viên
             find_score = CRUD(file_path)
-            student_data_find = find_score.find_by_sbd_UI(student_id)
+            student_data_find = find_score.find_by_sbd(student_id)
 
             # Kiểm tra nếu tìm thấy thí sinh
             if student_data_find:
