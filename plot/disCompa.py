@@ -13,8 +13,8 @@ def plot_student_distribution_comparison():
         None: Hiển thị trực tiếp biểu đồ so sánh số lượng học sinh trong các khung điểm.
     """
     # Đọc dữ liệu từ file CSV
-    data_2023 = pd.read_csv("diem2023.csv")
-    data_2024 = pd.read_csv("diem2024.csv")
+    data_2023 = pd.read_csv(r"data\diem2023.csv")
+    data_2024 = pd.read_csv(r"data\diem2024.csv")
 
     # Khung điểm mới
     score_bins = [0, 12, 16, 20, 24, 26, 28, 30]

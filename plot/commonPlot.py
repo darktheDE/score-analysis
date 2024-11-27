@@ -19,8 +19,8 @@ subject_combinations = {
 }
 
 # Đọc dữ liệu từ file CSV
-data2023 = pd.read_csv("diem2023.csv")
-data2024 = pd.read_csv("diem2024.csv")
+data2023 = pd.read_csv(r"data\diem2023.csv")
+data2024 = pd.read_csv(r"data\diem2024.csv")
 
 # Điền giá trị 0 cho các ô trống
 data2023.fillna(0, inplace=True)

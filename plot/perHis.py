@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Đọc file CSV
-data2023 = pd.read_csv("diem2023.csv")
-data2024 = pd.read_csv("diem2024.csv")
+data2023 = pd.read_csv(r"data\diem2023.csv")
+data2024 = pd.read_csv(r"data\diem2024.csv")
 
 
 def plot_percentage_histogram(data1, data2, subject, year1, year2):

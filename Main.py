@@ -1,8 +1,8 @@
-import CRUD
+import utils.CRUD as CRUD
 import subprocess
 import os
-file_path1 = "diem2023.csv"
-file_path2 = "diem2024.csv"
+file_path1 = r"data\diem2023.csv"
+file_path2 = r"data\diem2024.csv"
 crud_instance_2023 = CRUD.CRUD(file_path1)
 crud_instance_2024 = CRUD.CRUD(file_path2)
 

@@ -70,8 +70,8 @@ def heatmapComb(data, year):
     plt.show()
 
 # Đọc file CSV
-data2023 = pd.read_csv("diem2023.csv")
-data2024 = pd.read_csv("diem2024.csv")
+data2023 = pd.read_csv(r"data\diem2023.csv")
+data2024 = pd.read_csv(r"data\diem2024.csv")
 
 # Vẽ heatmap cho dữ liệu năm 2023 và 2024
 heatmapSubject(data2023, 2023)

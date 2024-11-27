@@ -1,5 +1,5 @@
 from tkinter import *
-from CRUD import CRUD
+from utils.CRUD import CRUD
 # Tạo cửa sổ chính
 root = Tk()
 
