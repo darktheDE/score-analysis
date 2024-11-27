@@ -1,19 +1,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Đọc các file CSV
-data2023 = pd.read_csv("diem2023.csv")
-data2024 = pd.read_csv("diem2024.csv")
-
-
-def plot_average_scores(data2023, data2024):
+def plot_average_scores():
     """
     Tính toán điểm trung bình của các môn học và vẽ biểu đồ đường so sánh
     xu hướng điểm trung bình giữa hai năm 2023 và 2024.
-
-    Args:
-        data2023 (pd.DataFrame): Dữ liệu điểm thi của năm 2023 với mỗi cột là một môn học và các hàng là điểm của từng học sinh.
-        data2024 (pd.DataFrame): Dữ liệu điểm thi của năm 2024 với mỗi cột là một môn học và các hàng là điểm của từng học sinh.
 
     Returns:
         None: Hiển thị trực tiếp biểu đồ đường so sánh xu hướng điểm trung bình giữa hai năm.
@@ -21,13 +12,13 @@ def plot_average_scores(data2023, data2024):
     Raises:
         None
     """
-    # Xử lý giá trị thiếu
-    data2023 = data2023.fillna(0)
-    data2024 = data2024.fillna(0)
+    # Đọc các file CSV
+    data2023 = pd.read_csv(r"data\diem2023.csv")
+    data2024 = pd.read_csv(r"data\diem2024.csv")
 
-    # Tính toán điểm trung bình
-    avg2023 = data2023.mean()
-    avg2024 = data2024.mean()
+    # Tính toán điểm trung bình, bỏ qua các giá trị NaN
+    avg2023 = data2023.mean(skipna=True)
+    avg2024 = data2024.mean(skipna=True)
 
     # Tạo DataFrame để chứa điểm trung bình
     df = pd.DataFrame(
@@ -52,7 +43,7 @@ def plot_average_scores(data2023, data2024):
         for x, y in zip(df["Year"], df[subject]):
             plt.text(x, y, f"{y:.2f}", ha="right", va="bottom")
 
-    plt.title("Xu hướng điểm trung bình từng môn 2 năm 2023, 2024")
+    plt.title("Xu hướng điểm trung bình từng môn 2 năm 2023, 2024 TPHCM")
     plt.xlabel("Năm")
     plt.ylabel("Điểm trung bình")
     plt.xticks([2023, 2024])  # Chỉ hiển thị năm 2023 và 2024 trên trục X
@@ -60,6 +51,5 @@ def plot_average_scores(data2023, data2024):
     plt.grid(True)
     plt.show()
 
-
 # Gọi hàm để vẽ biểu đồ
-plot_average_scores(data2023, data2024)
+# plot_average_scores()

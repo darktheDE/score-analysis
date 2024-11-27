@@ -1,16 +1,20 @@
 import csv
 
 class CRUD:
+    """
+    Class với các phương thức có thể thao tác với dữ liệu trên file
+    """
     def __init__(self, file_path):
         self.file_path = file_path
         self.subjects = ["toan", "ngu_van", "ngoai_ngu", "vat_li", "hoa_hoc", "sinh_hoc", "lich_su", "dia_li", "gdcd"]
         self.province_code = {"02": "TP. Hồ Chí Minh"}
         self.groups = {
             "A00": ["toan", "vat_li", "hoa_hoc"],
-            "A01": ["toan", "vat_li", "ngoai_ngu"],
+            "A02": ["toan", "vat_li", "sinh_hoc"],
             "B00": ["toan", "hoa_hoc", "sinh_hoc"],
             "C00": ["ngu_van", "lich_su", "dia_li"],
-            "D01": ["ngu_van", "toan", "ngoai_ngu"],
+            "C19": ["ngu_van", "lich_su", "gdcd"],
+            "C20": ["ngu_van", "dia_li", "gdcd"]
         }
         self.convert = {"toan":"toán", "ngu_van" : "ngữ văn", "ngoai_ngu": "ngoại ngữ", "vat_li":"vật lí", "hoa_hoc": "hóa học",
                         "sinh_hoc":"sinh học", "lich_su":"lịch sử","dia_li": "địa lí", "gdcd": "giáo dục công dân"
@@ -114,7 +118,7 @@ class CRUD:
             header = next(reader)
             header = list(header)
             # Tạo list data chứa các dòng dữ liệu
-            data = [row for row in reader]
+            data = list(reader)
 
 
         # Duyệt qua từng khối thi
@@ -216,11 +220,6 @@ class CRUD:
             data = list(reader)
 
         subject_index = self.subjects.index(subject) + 1
-        # Format lại điểm thi các môn là rỗng
-        for row in data:
-            for subject in self.subjects:
-                if row[self.subjects.index(subject) + 1] == '':
-                    row[self.subjects.index(subject) + 1] = 0
 
         print("Thông tin các thí sinh thi môn", self.convert[subject], "có điểm", score, "là:")
         check = True
@@ -232,3 +231,32 @@ class CRUD:
         
         if check == True:
             print("Không tìm thấy thông tin thí sinh thi môn", self.convert[subject], "có điểm", score)
+
+def find_by_sbd_UI(self, sbd_target):
+        """
+        Hàm tìm kiếm thông tin thí sinh theo số báo danh và trả về thông tin.
+
+        Args:
+            sbd_target (string): Truyền vào số báo danh của thí sinh cần tìm kiếm
+
+        Returns:
+            list hoặc None: Trả về thông tin thí sinh nếu tìm thấy, ngược lại trả về None.
+        """
+        try:
+            with open(self.file_path, mode='r', newline='') as csv_file:
+                reader = csv.reader(csv_file)
+                next(reader)  # Bỏ qua dòng tiêu đề
+                data = list(reader)
+
+            for row in data:
+                if row[0] == sbd_target:  # So sánh số báo danh
+                    return row  # Trả về thông tin thí sinh tìm thấy
+
+            return None  # Nếu không tìm thấy thí sinh, trả về None
+
+        except FileNotFoundError:
+            print(f"File không tìm thấy: {self.file_path}")
+            return None
+        except Exception as e:
+            print(f"Đã xảy ra lỗi: {e}")
+            return None

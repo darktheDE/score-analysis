@@ -35,7 +35,7 @@ def heatmapSubject(data, year):
         square=True,
         linewidths=0.5,
     )
-    plt.title(f"Ma Trận Tương Quan Giữa Các Môn Học Năm {year}", fontsize=16)
+    plt.title(f"Ma Trận Tương Quan Giữa Các Môn Học Năm {year} TPHCM", fontsize=16)
     plt.xticks(rotation=45, ha="right")
     plt.yticks(rotation=0)
     plt.show()
@@ -43,17 +43,12 @@ def heatmapSubject(data, year):
 def heatmapComb(data, year):
     # Định nghĩa các tổ hợp môn
     to_hop_dict = {
-        "A00": ["toan", "vat_li", "hoa_hoc"],
-        "A01": ["toan", "vat_li", "ngoai_ngu"],
-        "B00": ["toan", "hoa_hoc", "sinh_hoc"],
-        "C00": ["ngu_van", "lich_su", "dia_li"],
-        "C19": ["ngu_van", "lich_su", "gdcd"],
-        "C20": ["ngu_van", "dia_li", "gdcd"],
-        "D01": ["ngu_van", "toan", "ngoai_ngu"],
-        "D07": ["toan", "hoa_hoc", "ngoai_ngu"],
-        "D14": ["ngu_van", "lich_su", "ngoai_ngu"],
-        "D15": ["ngu_van", "dia_li", "ngoai_ngu"],
-        "D66": ["ngu_van", "gdcd", "ngoai_ngu"],
+            "A00": ["toan", "vat_li", "hoa_hoc"],
+            "A02": ["toan", "vat_li", "sinh_hoc"],
+            "B00": ["toan", "hoa_hoc", "sinh_hoc"],
+            "C00": ["ngu_van", "lich_su", "dia_li"],
+            "C19": ["ngu_van", "lich_su", "gdcd"],
+            "C20": ["ngu_van", "dia_li", "gdcd"]
     }
 
     # Tính điểm trung bình cho mỗi tổ hợp môn
@@ -69,18 +64,18 @@ def heatmapComb(data, year):
     # Vẽ biểu đồ heatmap
     plt.figure(figsize=(10, 8))
     sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap='coolwarm', cbar=True, square=True)
-    plt.title(f"Ma Trận Tương Quan Giữa Các Tổ Hợp Môn Năm {year}", fontsize=16)
+    plt.title(f"Ma Trận Tương Quan Giữa Một Số Tổ Hợp Môn Phổ Biến Năm {year} TPHCM", fontsize=16)
     plt.xticks(rotation=45, ha='right')
     plt.yticks(rotation=0)
     plt.show()
 
 # Đọc file CSV
-data2023 = pd.read_csv("diem2023.csv")
-data2024 = pd.read_csv("diem2024.csv")
+data2023 = pd.read_csv(r"data\diem2023.csv")
+data2024 = pd.read_csv(r"data\diem2024.csv")
 
 # Vẽ heatmap cho dữ liệu năm 2023 và 2024
-heatmapSubject(data2023, 2023)
-heatmapSubject(data2024, 2024)
+# heatmapSubject(data2023, 2023)
+# heatmapSubject(data2024, 2024)
 
-heatmapComb(data2023, 2023)
-heatmapComb(data2024, 2024)
+# heatmapComb(data2023, 2023)
+# heatmapComb(data2024, 2024)
