@@ -52,7 +52,7 @@ def plot_average_scores(data2023, data2024):
         for x, y in zip(df["Year"], df[subject]):
             plt.text(x, y, f"{y:.2f}", ha="right", va="bottom")
 
-    plt.title("Xu hướng điểm trung bình từng môn 2 năm 2023, 2024")
+    plt.title("Xu hướng điểm trung bình từng môn 2 năm 2023, 2024 TPHCM")
     plt.xlabel("Năm")
     plt.ylabel("Điểm trung bình")
     plt.xticks([2023, 2024])  # Chỉ hiển thị năm 2023 và 2024 trên trục X

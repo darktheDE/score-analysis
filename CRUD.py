@@ -10,8 +10,11 @@ class CRUD:
         self.province_code = {"02": "TP. Hồ Chí Minh"}
         self.groups = {
             "A00": ["toan", "vat_li", "hoa_hoc"],
+            "A02": ["toan", "vat_li", "sinh_hoc"],
             "B00": ["toan", "hoa_hoc", "sinh_hoc"],
             "C00": ["ngu_van", "lich_su", "dia_li"],
+            "C19": ["ngu_van", "lich_su", "gdcd"],
+            "C20": ["ngu_van", "dia_li", "gdcd"]
         }
         self.convert = {"toan":"toán", "ngu_van" : "ngữ văn", "ngoai_ngu": "ngoại ngữ", "vat_li":"vật lí", "hoa_hoc": "hóa học",
                         "sinh_hoc":"sinh học", "lich_su":"lịch sử","dia_li": "địa lí", "gdcd": "giáo dục công dân"

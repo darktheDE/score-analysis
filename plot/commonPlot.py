@@ -11,16 +11,11 @@ import matplotlib.pyplot as plt
 # Dữ liệu tổ hợp môn theo khối cụ thể (đã sửa tên các môn học)
 subject_combinations = {
     "A00": ["toan", "vat_li", "hoa_hoc"],
-    "A01": ["toan", "vat_li", "ngoai_ngu"],
+    "A02": ["toan", "vat_li", "sinh_hoc"],
     "B00": ["toan", "hoa_hoc", "sinh_hoc"],
     "C00": ["ngu_van", "lich_su", "dia_li"],
     "C19": ["ngu_van", "lich_su", "gdcd"],
-    "C20": ["ngu_van", "dia_li", "gdcd"],
-    "D01": ["ngu_van", "toan", "ngoai_ngu"],
-    "D07": ["toan", "hoa_hoc", "ngoai_ngu"],
-    "D14": ["ngu_van", "lich_su", "ngoai_ngu"],
-    "D15": ["ngu_van", "dia_li", "ngoai_ngu"],
-    "D66": ["ngu_van", "gdcd", "ngoai_ngu"],
+    "C20": ["ngu_van", "dia_li", "gdcd"]
 }
 
 # Đọc dữ liệu từ file CSV
@@ -366,10 +361,10 @@ def plot_score_distribution_by_combinations(data, subject_combinations):
 
 
 # Ví dụ gọi hàm
-plot_score_distribution_by_combination(data2024, "A01", subject_combinations)
+plot_score_distribution_by_combination(data2024, "A02", subject_combinations)
 
 plot_score_distribution_by_subject(data2024, "ngu_van")
 
-plot_score_distribution_pie(data2023, "A01", subject_combinations)
+plot_score_distribution_pie(data2023, "A02", subject_combinations)
 
 plot_score_distribution_by_combinations(data2023, subject_combinations)
