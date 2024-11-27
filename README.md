@@ -6,8 +6,7 @@ This project is a **Python-based data analysis and visualization tool** designed
 ## 📁 Project Structure
 The project is organized into several main files and directories:
 
-- **`Main.py`**: 🟢 Initiates data processing and visualization.
-- **`CRUD.py`**: 🔄 Provides functions for CRUD (Create, Read, Update, Delete) operations, enabling efficient data management.
+- **`Main.py`**: 🟢 Initiates data processing and visualization by console for testing functions.
 - **`dataProcess/`**: 📂 Contains essential data processing code.
   - **`checkID.py`**: Handles data crawling and processing.
   - **`text.txt`**: Stores intermediate data results.
@@ -20,7 +19,7 @@ The project is organized into several main files and directories:
   - **`heatmap.py`**: Contains functions for heatmap visualizations.
   - **`perHis.py`**: Contains function `plot_percentage_histogram`.
 - **`utils/`**: 🔧 Contains utility scripts.
-  - **`CRUD.py`**: Handles CRUD operations on CSV data.
+  - **`CRUD.py`**:🔄 Handles CRUD operations on CSV data. Provides functions for CRUD (Create, Read, Update, Delete) operations, enabling efficient data management.
 - **`UI.py`**: 🖥 Implements a graphical user interface for easy interaction with the dataset.
 - **`data/`**: 📋 Contains data files.
   - **`diem2023.csv`**: Contains exam scores for the year 2023.
@@ -56,7 +55,7 @@ The project is organized into several main files and directories:
 - Optimize data crawling and processing for larger datasets.
 
 ## 👥 Contributors
-- **Phan Trong Qui (Phanqui72)**: Data processing (Collection, Cleaning, Exporting).
+- **Phan Trong Qui (Phanqui72)**: Data processing (Crawling, Collecting, Cleaning, Exporting).
 - **Do Kien Hung (darktheDE)**: Data visualization, branch management, project organization using modules and packages.
 - **Phan Trong Phu (phantrongphu123)**: UI development, main script functionalities.
 - **Tran Thanh Danh (DanhTrannn)**: CRUD mechanism, main script functionalities.
