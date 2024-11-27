@@ -22,18 +22,20 @@ subject_combinations = {
 data2023 = pd.read_csv(r"data\diem2023.csv")
 data2024 = pd.read_csv(r"data\diem2024.csv")
 
-# Điền giá trị 0 cho các ô trống
-data2023.fillna(0, inplace=True)
-data2024.fillna(0, inplace=True)
+
+# # Điền giá trị 0 cho các ô trống
+# data2023.fillna(0, inplace=True)
+# data2024.fillna(0, inplace=True)
 
 
-def plot_score_distribution_by_subject(data, subject):
+def plot_score_distribution_by_subject(data, subject, year):
     """
     Vẽ biểu đồ phổ điểm cho một môn học cụ thể.
 
     Args:
         data (pd.DataFrame): Dữ liệu điểm thi với mỗi cột là một môn học và các hàng là điểm của từng học sinh.
         subject (str): Tên môn học cần vẽ biểu đồ.
+        year (int): Năm thi.
 
     Returns:
         None: Hiển thị biểu đồ histogram trực tiếp.
@@ -41,6 +43,7 @@ def plot_score_distribution_by_subject(data, subject):
     Raises:
         ValueError: Nếu môn học không có trong cột của DataFrame.
     """
+    data = data.dropna(subset=[subject])
     if subject not in data.columns:  # Kiểm tra xem môn học có hợp lệ không
         print(f"Môn học {subject} không hợp lệ.")
         return
@@ -67,7 +70,7 @@ def plot_score_distribution_by_subject(data, subject):
     )
     ax.set_xlabel("Điểm")
     ax.set_ylabel("Số lượng thí sinh")
-    ax.set_title(f"Phổ điểm môn {subject.capitalize()}")
+    ax.set_title(f"Phổ điểm môn {subject.capitalize()} năm {year}")
     ax.set_xticks([x * 0.5 for x in range(21)])
 
     # Thêm lưới
@@ -133,7 +136,7 @@ def plot_score_distribution_by_subject(data, subject):
 
 
 def plot_score_distribution_by_combination(
-    data, combination_code, subject_combinations
+    data, combination_code, subject_combinations, year
 ):
     """
     Vẽ biểu đồ phổ điểm cho một tổ hợp môn cụ thể.
@@ -142,6 +145,7 @@ def plot_score_distribution_by_combination(
         data (pd.DataFrame): Dữ liệu điểm thi với mỗi cột là một môn học và các hàng là điểm của từng học sinh.
         combination_code (str): Mã tổ hợp môn (ví dụ: "A01", "C00") để tính tổng điểm tổ hợp.
         subject_combinations (dict): Dictionary chứa mã tổ hợp môn và danh sách các môn học tương ứng.
+        year (int): Năm thi.
 
     Returns:
         None: Hiển thị biểu đồ histogram trực tiếp.
@@ -154,12 +158,10 @@ def plot_score_distribution_by_combination(
         return
 
     subjects = subject_combinations[combination_code]
-
-    # Tính điểm tổ hợp, bỏ qua các môn có điểm 0
-    data["combination_score"] = (
-        data[subjects].replace(0, pd.NA).sum(axis=1, skipna=True)
-    )
-
+    # Loại bỏ những thí sinh không thi những môn trong tổ hợp
+    data = data.dropna(subset=subjects)
+    # Tính điểm tổ hợp
+    data["combination_score"] = data[subjects].sum(axis=1)
     # Thống kê
     max_score = data["combination_score"].max()
     min_score = data["combination_score"].min()
@@ -167,8 +169,6 @@ def plot_score_distribution_by_combination(
     median_score = data["combination_score"].median()
     mode_score = data["combination_score"].mode().values[0]
     total_students = len(data)
-    below_1 = len(data[data["combination_score"] < 1])
-    below_5 = len(data[data["combination_score"] < 5])
     max_count = len(data[data["combination_score"] == max_score])
     min_count = len(data[data["combination_score"] == min_score])
 
@@ -179,7 +179,7 @@ def plot_score_distribution_by_combination(
     )
     ax.set_xlabel("Điểm")
     ax.set_ylabel("Số lượng thí sinh")
-    ax.set_title(f"Phổ điểm tổ hợp {combination_code} ({', '.join(subjects)})")
+    ax.set_title(f"Phổ điểm tổ hợp {combination_code} ({', '.join(subjects)}) - Năm {year}")
     ax.set_xticks(range(0, 31))
 
     # Hiển thị thông tin thống kê bên phải biểu đồ
@@ -221,27 +221,13 @@ def plot_score_distribution_by_combination(
         transform=ax.transAxes,
         ha="left",
     )
-    ax.text(
-        1.02,
-        0.5,
-        f"Số học sinh có điểm < 1: {below_1}",
-        transform=ax.transAxes,
-        ha="left",
-    )
-    ax.text(
-        1.02,
-        0.45,
-        f"Số học sinh có điểm < 5: {below_5}",
-        transform=ax.transAxes,
-        ha="left",
-    )
-
+    
     # Cân chỉnh layout để không bị chồng chéo
     plt.tight_layout(rect=[0, 0, 0.85, 1])
     plt.show()
 
 
-def plot_score_distribution_pie(data, combination_code, subject_combinations):
+def plot_score_distribution_pie(data, combination_code, subject_combinations, year):
     """
     Vẽ biểu đồ tròn thể hiện tỷ lệ học sinh thuộc các nhóm điểm của một tổ hợp môn.
 
@@ -249,6 +235,7 @@ def plot_score_distribution_pie(data, combination_code, subject_combinations):
         data (pd.DataFrame): Dữ liệu điểm thi với mỗi cột là một môn học và các hàng là điểm của từng học sinh.
         combination_code (str): Mã tổ hợp môn (ví dụ: "A01", "C00") để tính tổng điểm tổ hợp.
         subject_combinations (dict): Dictionary chứa mã tổ hợp môn và danh sách các môn học tương ứng.
+        year (int): Năm thi.
 
     Returns:
         None: Hiển thị biểu đồ tròn trực tiếp.
@@ -260,9 +247,13 @@ def plot_score_distribution_pie(data, combination_code, subject_combinations):
         raise ValueError(f"Mã tổ hợp {combination_code} không hợp lệ.")
 
     subjects = subject_combinations[combination_code]
-    data["combination_score"] = (
-        data[subjects].replace(0, pd.NA).sum(axis=1, skipna=True)
-    )
+    # data["combination_score"] = (
+    #     data[subjects].replace(0, pd.NA).sum(axis=1, skipna=True)
+    # )
+    # Loại bỏ các thí sinh có bất kỳ môn nào không có dữ liệu (NaN) 
+    data = data.dropna(subset=subjects) 
+    # Tính điểm tổ hợp
+    data["combination_score"] = data[subjects].sum(axis=1)
     bins = [0, 15, 24, 30]
     labels = ["< 15", "15 - 24", ">= 24"]
     data["score_group"] = pd.cut(
@@ -278,7 +269,7 @@ def plot_score_distribution_pie(data, combination_code, subject_combinations):
         startangle=90,
         colors=["red", "yellow", "green"],
     )
-    plt.title(f"Tỷ lệ học sinh theo mức điểm tổ hợp {combination_code}")
+    plt.title(f"Tỷ lệ học sinh theo mức điểm tổ hợp {combination_code} TPHCM năm {year}")
 
     # Thêm chú thích
     plt.legend(title="Nhóm điểm", loc="upper left")
@@ -286,13 +277,14 @@ def plot_score_distribution_pie(data, combination_code, subject_combinations):
     plt.show()
 
 
-def plot_score_distribution_by_combinations(data, subject_combinations):
+def plot_score_distribution_by_combinations(data, subject_combinations, year):
     """
     Vẽ biểu đồ cột hiển thị điểm cao nhất giữa các tổ hợp môn.
 
     Args:
         data (pd.DataFrame): Dữ liệu điểm thi với mỗi cột là một môn học và các hàng là điểm của từng học sinh.
         subject_combinations (dict): Dictionary chứa mã tổ hợp môn và danh sách các môn học tương ứng.
+        year (int): Năm thi.
 
     Returns:
         None: Hiển thị biểu đồ cột trực tiếp.
@@ -351,7 +343,7 @@ def plot_score_distribution_by_combinations(data, subject_combinations):
     # Thiết lập trục và nhãn
     plt.xlabel("Tổ hợp môn", fontsize=12)
     plt.ylabel("Điểm", fontsize=12)
-    plt.title("Phân phối điểm cao nhất giữa các tổ hợp môn", fontsize=16)
+    plt.title(f"Phân phối điểm cao nhất giữa các tổ hợp môn TPHCM năm {year}", fontsize=16)
     plt.xticks([i for i in x], scores_df["Combination"], rotation=45)
     plt.legend()
 
@@ -361,10 +353,10 @@ def plot_score_distribution_by_combinations(data, subject_combinations):
 
 
 # Ví dụ gọi hàm
-plot_score_distribution_by_combination(data2024, "A02", subject_combinations)
+# plot_score_distribution_by_combination(data2024, "A00", subject_combinations, 2024)
 
-plot_score_distribution_by_subject(data2024, "ngu_van")
+# plot_score_distribution_by_subject(data2024, "ngu_van", 2024)
 
-plot_score_distribution_pie(data2023, "A02", subject_combinations)
+plot_score_distribution_pie(data2024, "A00", subject_combinations, 2024)
 
-plot_score_distribution_by_combinations(data2023, subject_combinations)
+# plot_score_distribution_by_combinations(data2023, subject_combinations, 2023)
