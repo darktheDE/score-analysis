@@ -65,4 +65,4 @@ def freqSub(data1, data2, year1, year2):
 
 
 # Gọi hàm với dữ liệu của năm 2023 và 2024
-freqSub(data2023, data2024, 2023, 2024)
+# freqSub(data2023, data2024, 2023, 2024)

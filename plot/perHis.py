@@ -87,4 +87,4 @@ def plot_percentage_histogram(data1, data2, subject, year1, year2):
 
 
 # Gọi hàm để vẽ biểu đồ Percentage Histogram cho một môn, ví dụ: Toán
-plot_percentage_histogram(data2023, data2024, "toan", 2023, 2024)
+# plot_percentage_histogram(data2023, data2024, "toan", 2023, 2024)

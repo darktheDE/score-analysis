@@ -130,4 +130,4 @@ def plot_student_distribution_comparison():
     plt.show()
 
 # Ví dụ sử dụng hàm
-plot_student_distribution_comparison()
+# plot_student_distribution_comparison()

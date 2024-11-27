@@ -357,6 +357,6 @@ def plot_score_distribution_by_combinations(data, subject_combinations, year):
 
 # plot_score_distribution_by_subject(data2024, "ngu_van", 2024)
 
-plot_score_distribution_pie(data2024, "A00", subject_combinations, 2024)
+# plot_score_distribution_pie(data2024, "A00", subject_combinations, 2024)
 
 # plot_score_distribution_by_combinations(data2023, subject_combinations, 2023)

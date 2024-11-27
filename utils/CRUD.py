@@ -231,3 +231,32 @@ class CRUD:
         
         if check == True:
             print("Không tìm thấy thông tin thí sinh thi môn", self.convert[subject], "có điểm", score)
+
+def find_by_sbd_UI(self, sbd_target):
+        """
+        Hàm tìm kiếm thông tin thí sinh theo số báo danh và trả về thông tin.
+
+        Args:
+            sbd_target (string): Truyền vào số báo danh của thí sinh cần tìm kiếm
+
+        Returns:
+            list hoặc None: Trả về thông tin thí sinh nếu tìm thấy, ngược lại trả về None.
+        """
+        try:
+            with open(self.file_path, mode='r', newline='') as csv_file:
+                reader = csv.reader(csv_file)
+                next(reader)  # Bỏ qua dòng tiêu đề
+                data = list(reader)
+
+            for row in data:
+                if row[0] == sbd_target:  # So sánh số báo danh
+                    return row  # Trả về thông tin thí sinh tìm thấy
+
+            return None  # Nếu không tìm thấy thí sinh, trả về None
+
+        except FileNotFoundError:
+            print(f"File không tìm thấy: {self.file_path}")
+            return None
+        except Exception as e:
+            print(f"Đã xảy ra lỗi: {e}")
+            return None

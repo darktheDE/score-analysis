@@ -52,4 +52,4 @@ def plot_average_scores():
     plt.show()
 
 # Gọi hàm để vẽ biểu đồ
-plot_average_scores()
+# plot_average_scores()
