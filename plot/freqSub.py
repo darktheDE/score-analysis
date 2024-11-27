@@ -2,8 +2,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-data2023 = pd.read_csv("diem2023.csv")
-data2024 = pd.read_csv("diem2024.csv")
+data2023 = pd.read_csv(r"data\diem2023.csv")
+data2024 = pd.read_csv(r"data\diem2024.csv")
 
 
 def freqSub(data1, data2, year1, year2):
