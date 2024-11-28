@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
 def plot_average_scores():
     """
     Tính toán điểm trung bình của các môn học và vẽ biểu đồ đường so sánh
@@ -50,6 +51,7 @@ def plot_average_scores():
     plt.legend()
     plt.grid(True)
     plt.show()
+
 
 # Gọi hàm để vẽ biểu đồ
 # plot_average_scores()

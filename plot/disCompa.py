@@ -5,10 +5,6 @@ def plot_student_distribution_comparison():
     """
     Vẽ biểu đồ so sánh số lượng học sinh trong các khung điểm của một số tổ hợp môn phổ biến năm 2023 và 2024.
 
-    Args:
-        csv_file_2023 (str): Đường dẫn đến file CSV chứa dữ liệu điểm thi năm 2023.
-        csv_file_2024 (str): Đường dẫn đến file CSV chứa dữ liệu điểm thi năm 2024.
-
     Returns:
         None: Hiển thị trực tiếp biểu đồ so sánh số lượng học sinh trong các khung điểm.
     """
@@ -38,6 +34,8 @@ def plot_student_distribution_comparison():
         Returns:
             pd.Series: Tổng điểm của từng học sinh cho tổ hợp môn.
         """
+        # Loại bỏ các thí sinh không thi môn thuộc tổ hợp (NaN)
+        df = df.dropna(subset=combination)
         return df[combination].sum(axis=1)
 
     def categorize_scores(scores, bins):
@@ -129,5 +127,4 @@ def plot_student_distribution_comparison():
     plt.tight_layout(pad=9.0)
     plt.show()
 
-# Ví dụ sử dụng hàm
 # plot_student_distribution_comparison()
