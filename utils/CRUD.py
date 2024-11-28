@@ -29,10 +29,17 @@ class CRUD:
             scores(dictionary): Chứa các item với key là tên môn thi và value là điểm thi
         """
         scores_list = [scores.get(subject) for subject in self.subjects]
-        with open(self.file_path, mode = 'a', newline='') as csv_file:
-            writer = csv.writer(csv_file)
-            row = [sbd] + scores_list
-            writer.writerow(row)
+        try:
+            with open(self.file_path, mode = 'a', newline='') as csv_file:
+                writer = csv.writer(csv_file)
+                row = [sbd] + scores_list
+                writer.writerow(row)
+        except FileNotFoundError:
+            print(f"File không tìm thấy: {self.file_path}")
+            return None
+        except Exception as e:
+            print(f"Đã xảy ra lỗi: {e}")
+            return None
 
 
     def read_score(self): 
@@ -46,17 +53,26 @@ class CRUD:
             list: chứa danh sách các dòng dữ liệu được đọc từ file
         """
         scores  = []
-        with open(self.file_path, mode = 'r', newline='') as csv_file:
-            reader = csv.reader(csv_file)
-            next(reader)
-            for row in reader:
-                sbd = row[0]
-                score_dict = {}
-                j = 1
-                for subject in self.subjects:
-                    score_dict[subject] = row[j]
-                    j+=1
-                scores.append((sbd, score_dict))
+        try:
+            with open(self.file_path, mode = 'r', newline='') as csv_file:
+                reader = csv.reader(csv_file)
+                next(reader)
+                data = list(reader)
+        except FileNotFoundError:
+            print(f"File không tìm thấy: {self.file_path}")
+            return None
+        except Exception as e:
+            print(f"Đã xảy ra lỗi: {e}")
+            return None
+        
+        for row in data:
+            sbd = row[0]
+            score_dict = {}
+            j = 1
+            for subject in self.subjects:
+                score_dict[subject] = row[j]
+                j+=1
+            scores.append((sbd, score_dict))
         return scores
     
 
@@ -70,9 +86,17 @@ class CRUD:
             new_score(float): Điểm thi mới cần cập nhật cho môn học đó
         """
         data = []
-        with open(self.file_path, mode = 'r', newline = '') as csv_file:
-            reader = csv.reader(csv_file)
-            data = list(reader)
+        try:
+            with open(self.file_path, mode = 'r', newline = '') as csv_file:
+                reader = csv.reader(csv_file)
+                data = list(reader)
+        except FileNotFoundError:
+            print(f"File không tìm thấy: {self.file_path}")
+            return None
+        except Exception as e:
+            print(f"Đã xảy ra lỗi: {e}")
+            return None
+        
         with open(self.file_path, mode = 'w', newline = '') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow(data[0])
@@ -94,9 +118,17 @@ class CRUD:
             sbd(string): Số báo danh của thí sinh cần xoá điểm thi
         """
         data = []
-        with open(self.file_path, mode = 'r', newline = '') as csv_file:
-            reader = csv.reader(csv_file)
-            data = list(reader)
+        try:
+            with open(self.file_path, mode = 'r', newline = '') as csv_file:
+                reader = csv.reader(csv_file)
+                data = list(reader)
+        except FileNotFoundError:
+            print(f"File không tìm thấy: {self.file_path}")
+            return None
+        except Exception as e:
+            print(f"Đã xảy ra lỗi: {e}")
+            return None
+        
         with open(self.file_path, mode = 'w', newline = '') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow(data[0])
@@ -112,13 +144,20 @@ class CRUD:
         Args:
             (none)
         """
-        with open(self.file_path, mode='r', newline='') as csv_file:
-            reader = csv.reader(csv_file)
-            # Lấy hàng tiêu đề và trỏ qua dòng tiếp theo
-            header = next(reader)
-            header = list(header)
-            # Tạo list data chứa các dòng dữ liệu
-            data = list(reader)
+        try:
+            with open(self.file_path, mode='r', newline='') as csv_file:
+                reader = csv.reader(csv_file)
+                # Lấy hàng tiêu đề và trỏ qua dòng tiếp theo
+                header = next(reader)
+                header = list(header)
+                # Tạo list data chứa các dòng dữ liệu
+                data = list(reader)
+        except FileNotFoundError:
+            print(f"File không tìm thấy: {self.file_path}")
+            return None
+        except Exception as e:
+            print(f"Đã xảy ra lỗi: {e}")
+            return None
 
 
         # Duyệt qua từng khối thi
@@ -166,11 +205,17 @@ class CRUD:
         if subject not in self.subjects:
             print(f"Môn học '{subject}' không hợp lệ. Vui lòng chọn trong danh sách: {self.subjects}")
             return
-
-        with open(self.file_path, mode='r', newline='') as csv_file:
-            reader = csv.reader(csv_file)
-            next(reader)
-            data = list(reader)
+        try:
+            with open(self.file_path, mode='r', newline='') as csv_file:
+                reader = csv.reader(csv_file)
+                next(reader)
+                data = list(reader)
+        except FileNotFoundError:
+            print(f"File không tìm thấy: {self.file_path}")
+            return None
+        except Exception as e:
+            print(f"Đã xảy ra lỗi: {e}")
+            return None
 
         # Lấy index của môn học cần sắp xếp
         subject_index = self.subjects.index(subject) + 1
@@ -189,18 +234,26 @@ class CRUD:
         Args:
             sbd_target(string): Truyền vào số báo danh của thí sinh cần tìm kiếm
         """
-        with open(self.file_path, mode='r', newline='') as csv_file:
-            reader = csv.reader(csv_file)
-            next(reader)
-            data = list(reader)
+        try:
+            with open(self.file_path, mode='r', newline='') as csv_file:
+                reader = csv.reader(csv_file)
+                next(reader)
+                data = list(reader)
+        except FileNotFoundError:
+            print(f"File không tìm thấy: {self.file_path}")
+            return None
+        except Exception as e:
+            print(f"Đã xảy ra lỗi: {e}")
+            return None
         
         for row in data:
             if row[0] == sbd_target:
                 print("\nThông tin của thí sinh cần tìm kiếm: ")
                 print(row)
-                return
+                return row
         
         print("Không tìm thấy thông tin thí sinh với số báo danh:", sbd_target)
+        return None
 
     
     def find(self, subject, score):
@@ -214,10 +267,17 @@ class CRUD:
         if subject not in self.subjects:
             print(f"Môn học '{subject}' không hợp lệ. Vui lòng chọn trong danh sách: {self.subjects}")
             return
-        with open(self.file_path, mode='r', newline='') as csv_file:
-            reader = csv.reader(csv_file)
-            next(reader)
-            data = list(reader)
+        try:
+            with open(self.file_path, mode='r', newline='') as csv_file:
+                reader = csv.reader(csv_file)
+                next(reader)
+                data = list(reader)
+        except FileNotFoundError:
+            print(f"File không tìm thấy: {self.file_path}")
+            return None
+        except Exception as e:
+            print(f"Đã xảy ra lỗi: {e}")
+            return None
 
         subject_index = self.subjects.index(subject) + 1
 
@@ -232,31 +292,31 @@ class CRUD:
         if check == True:
             print("Không tìm thấy thông tin thí sinh thi môn", self.convert[subject], "có điểm", score)
 
-def find_by_sbd_UI(self, sbd_target):
-        """
-        Hàm tìm kiếm thông tin thí sinh theo số báo danh và trả về thông tin.
+# def find_by_sbd_UI(self, sbd_target):
+#         """
+#         Hàm tìm kiếm thông tin thí sinh theo số báo danh và trả về thông tin.
 
-        Args:
-            sbd_target (string): Truyền vào số báo danh của thí sinh cần tìm kiếm
+#         Args:
+#             sbd_target (string): Truyền vào số báo danh của thí sinh cần tìm kiếm
 
-        Returns:
-            list hoặc None: Trả về thông tin thí sinh nếu tìm thấy, ngược lại trả về None.
-        """
-        try:
-            with open(self.file_path, mode='r', newline='') as csv_file:
-                reader = csv.reader(csv_file)
-                next(reader)  # Bỏ qua dòng tiêu đề
-                data = list(reader)
+#         Returns:
+#             list hoặc None: Trả về thông tin thí sinh nếu tìm thấy, ngược lại trả về None.
+#         """
+#         try:
+#             with open(self.file_path, mode='r', newline='') as csv_file:
+#                 reader = csv.reader(csv_file)
+#                 next(reader)  # Bỏ qua dòng tiêu đề
+#                 data = list(reader)
 
-            for row in data:
-                if row[0] == sbd_target:  # So sánh số báo danh
-                    return row  # Trả về thông tin thí sinh tìm thấy
+#             for row in data:
+#                 if row[0] == sbd_target:  # So sánh số báo danh
+#                     return row  # Trả về thông tin thí sinh tìm thấy
 
-            return None  # Nếu không tìm thấy thí sinh, trả về None
+#             return None  # Nếu không tìm thấy thí sinh, trả về None
 
-        except FileNotFoundError:
-            print(f"File không tìm thấy: {self.file_path}")
-            return None
-        except Exception as e:
-            print(f"Đã xảy ra lỗi: {e}")
-            return None
+#         except FileNotFoundError:
+#             print(f"File không tìm thấy: {self.file_path}")
+#             return None
+#         except Exception as e:
+#             print(f"Đã xảy ra lỗi: {e}")
+#             return None
