@@ -2,29 +2,27 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Đọc file CSV
-data2023 = pd.read_csv(r"data\diem2023.csv")
-data2024 = pd.read_csv(r"data\diem2024.csv")
 
 
-def plot_percentage_histogram(data1, data2, subject, year1, year2):
+def plot_percentage_histogram(subject):
     """
     Vẽ biểu đồ histogram để so sánh phân bố điểm của một môn học giữa hai năm,
     đồng thời hiển thị tỷ lệ phần trăm của mỗi khoảng điểm và các percentiles.
 
     Args:
-        data1 (pd.DataFrame): Dữ liệu điểm thi của năm thứ nhất, với mỗi cột là một môn học và các hàng là điểm của từng học sinh.
-        data2 (pd.DataFrame): Dữ liệu điểm thi của năm thứ hai, với mỗi cột là một môn học và các hàng là điểm của từng học sinh.
         subject (str): Tên môn học cần vẽ biểu đồ (ví dụ: 'toan').
-        year1 (int): Năm học của dữ liệu thứ nhất (ví dụ: 2023).
-        year2 (int): Năm học của dữ liệu thứ hai (ví dụ: 2024).
-
+    
     Returns:
         None: Hiển thị trực tiếp biểu đồ histogram so sánh phân bố điểm của một môn học giữa hai năm.
 
     Raises:
         ValueError: Nếu môn học không có trong dữ liệu của một trong hai năm.
     """
+    data1 = pd.read_csv(r"data\diem2023.csv")
+    data2 = pd.read_csv(r"data\diem2024.csv")
+    year1 = 2023
+    year2 = 2024
+    
     # Kiểm tra xem môn học có trong dữ liệu không
     if subject not in data1.columns or subject not in data2.columns:
         print(f"Môn học {subject} không có trong dữ liệu.")
@@ -87,4 +85,4 @@ def plot_percentage_histogram(data1, data2, subject, year1, year2):
 
 
 # Gọi hàm để vẽ biểu đồ Percentage Histogram cho một môn, ví dụ: Toán
-# plot_percentage_histogram(data2023, data2024, "toan", 2023, 2024)
+# plot_percentage_histogram("toan")

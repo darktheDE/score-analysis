@@ -50,7 +50,6 @@ def heatmapComb(data, year):
             "C19": ["ngu_van", "lich_su", "gdcd"],
             "C20": ["ngu_van", "dia_li", "gdcd"]
     }
-
     # Tính điểm trung bình cho mỗi tổ hợp môn
     for to_hop, mon in to_hop_dict.items():
         data[to_hop] = data[mon].mean(axis=1)
