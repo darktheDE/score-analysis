@@ -2,13 +2,21 @@ from tkinter import *
 from tkinter import simpledialog
 from tkinter import messagebox
 import plot.aveSco
+import plot.commonPlot
+import plot.heatmap
+import plot.perHis
 from utils.CRUD import CRUD
 from itertools import islice
 import subprocess
+from tkinter import ttk 
 from plot import *
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 # import plot
 # Tạo cửa sổ chính
 root = Tk()
+root.title("Phân tích điểm thi 2024 và 2023 THPTQG HCM")
 
 # Đặt kích thước cửa sổ cố định
 window_width = 1200
@@ -79,7 +87,8 @@ def create_menu(root):
     frame_menu.grid(column=1, row=0, sticky="ew")
 
     # Thêm nút hoặc nội dung vào menu (có thể bổ sung nếu cần)
-    Label(frame_menu, text = ' \n ' ,bg="#104E8B").grid(column=0, row=0, padx=10, pady=5)
+    Label(frame_menu, text = ' Chương trình phân tích điểm thi 2023 và 2024 THPTQG HCM ' , font=('Arial',20), fg= 'white', justify='center',
+        bg="#104E8B").grid(column=0, row=0, padx=10, pady=5)
 
 # Tạo nội dung (Nội dung chính)
 def create_content(root):
@@ -106,7 +115,7 @@ def change_content(content):
         # Thêm ảnh vào Label bên trong Label
         try:
             img = PhotoImage(file=image_file)
-            img = img.subsample(7, 7)  # Thay đổi kích thước ảnh theo tỷ lệ
+            img = img.subsample(5, 5)  # Thay đổi kích thước ảnh theo tỷ lệ
             img_info = Label(label, image=img, bg="lightblue")
             img_info.grid(column=0, row=0, sticky="nswe")  # Đặt ảnh vào vị trí cột 0, hàng 0 của label
             label.image = img  # Giữ tham chiếu đến ảnh để tránh mất ảnh
@@ -121,12 +130,17 @@ def change_content(content):
     if content == 'Members':
 
         # Tạo các label với ảnh và thông tin
-        text_info='Tên: Phan Trọng Phú \n MSSV: 23133056 \n Nhiệm vụ: .............'
-        create_label_with_image(frame_content, row=0, col=0, image_file= 'icon_UI/phu.png', text=text_info)
-        create_label_with_image(frame_content, row=1, col=0, image_file= 'icon_UI/hung.png', text=text_info)
-        create_label_with_image(frame_content, row=2, col=0, image_file= 'icon_UI/qui.png', text=text_info)
-        create_label_with_image(frame_content, row=0, col=1, image_file= 'icon_UI/khoa.png', text=text_info)
-        create_label_with_image(frame_content, row=1, col=1, image_file='icon_UI/danh.png', text=text_info)
+        text_info='Tên: Phan Trọng Phú \n MSSV: 23133056 \n Nhiệm vụ: Thiết kế UI'
+        create_label_with_image(frame_content, row=0, col=0, image_file= 'icon_UI/phu.png', 
+                                text='Tên: Phan Trọng Phú \n MSSV: 23133056 \n Nhiệm vụ: Thiết kế UI')
+        create_label_with_image(frame_content, row=1, col=0, image_file= 'icon_UI/qui.png',
+                                 text='Tên: Phan Trọng Quí \n MSSV: 23133061 \n Nhiệm vụ: Lọc và xử lý data')
+        create_label_with_image(frame_content, row=2, col=0, image_file= 'icon_UI/hung.png', 
+                                text='Tên: Đỗ Kiến Hưng \n MSSV: 23133030 \n Nhiệm vụ: Vẽ và xử lý biểu đồ')
+        create_label_with_image(frame_content, row=0, col=1, image_file= 'icon_UI/khoa.png', 
+                                text='Tên: Lê Đăng Khoa \n MSSV: 23133036 \n Nhiệm vụ: Xây dựng chức năng và CRUD')
+        create_label_with_image(frame_content, row=1, col=1, image_file='icon_UI/danh.png',
+                                 text='Tên: Trần Thành Danh \n MSSV: 23133010 \n Nhiệm vụ: Xây dựng chức năng và CRUD')
     elif content == 'Search':
         # Nút xác nhận
         def on_confirm_click():
@@ -268,26 +282,157 @@ def change_content(content):
             # path = 'plot/cmp_1comb.py'
             # run_program(path)
             plot.aveSco.plot_average_scores()
-
         def run2():
-            path = 'plot/data_visualization.py'
-            run_program(path)
+            # Tạo một cửa sổ mới khi run2() được gọi
+            combobox_window = Toplevel(root)  # Mở cửa sổ mới
+            combobox_window.title("Chọn lựa các quan hệ tương quan")
+            combobox_window.geometry('300x100')
+
+            # Tạo combo box với các lựa chọn
+            combo = ttk.Combobox(combobox_window,width=35, values=["Ma trận tương quan giữa các môn 2024", 
+                                                          "Ma trận tương quan giữa các môn 2023",
+                                                          "Ma trận tương quan giữa các tổ hợp 2024",
+                                                          "Ma trận tương quan giữa các tổ hợp 2023"])
+            combo.pack(pady=20)
+
+            # Gắn sự kiện cho combo box khi người dùng chọn một tùy chọn
+            combo.bind("<<ComboboxSelected>>", lambda event: on_combobox_select_run2(combo, combobox_window))
+
+        def on_combobox_select_run2(combo, combobox_window):
+            # Lấy lựa chọn từ combo box
+            selected_option = combo.get()
+            data2023 = pd.read_csv(r"data\diem2023.csv")
+            data2024 = pd.read_csv(r"data\diem2024.csv")
+            # Kiểm tra lựa chọn và gọi hàm tương ứng
+            if selected_option == "Ma trận tương quan giữa các môn 2024":
+                plot.heatmap.heatmapSubject(data2024, 2024)
+            elif selected_option == "Ma trận tương quan giữa các môn 2023":
+                plot.heatmap.heatmapSubject(data2023, 2023)
+            elif selected_option == "Ma trận tương quan giữa các tổ hợp 2024":
+                plot.heatmap.heatmapComb(data2024, 2024)
+            elif selected_option == "Ma trận tương quan giữa các tổ hợp 2023":
+                plot.heatmap.heatmapComb(data2023, 2023)
+            else:
+                print("Lựa chọn không hợp lệ")
+            combobox_window.destroy()  # Đóng cửa sổ combo box sau khi chọn
 
         def run3():
-            path = 'plot/freq.py'
-            run_program(path)
-
-        def run4():
             path = 'plot/freqSub.py'
             run_program(path)
 
-        def run5():
-            path = 'plot/heatmap.py'
+        def run4():
+            path = 'plot/disCompa.py'
             run_program(path)
 
+        def run5():
+            # Tạo một cửa sổ mới khi run2() được gọi
+            combobox_window = Toplevel(root)  # Mở cửa sổ mới
+            combobox_window.title("Chọn môn")
+            combobox_window.geometry('250x100')
+
+            # Tạo combo box với các lựa chọn
+            combo = ttk.Combobox(combobox_window, values=["Toan", "Van", "Ngoai ngu","Vat ly", "Hoa hoc", "Sinh hoc","Lich su", "Dia li","GDCD"])
+            combo.pack(pady=20)
+
+            # Gắn sự kiện cho combo box khi người dùng chọn một tùy chọn
+            combo.bind("<<ComboboxSelected>>", lambda event: on_combobox_select_run5(combo, combobox_window))
+
+            # Nút chạy để thực thi khi chọn một tùy chọn
+            run_button = Button(combobox_window, text="Run", command=lambda: on_combobox_select_run5(combo, combobox_window))
+            run_button.pack(pady=10)
+
+        def on_combobox_select_run5(combo, combobox_window):
+            # Lấy lựa chọn từ combo box
+            selected_option = combo.get()
+            # Kiểm tra lựa chọn và gọi hàm tương ứng
+            #toan,ngu_van,Ngoai ngu",vat_li,hoa_hoc,sinh_hoc,lich_su,dia_li,gdcd
+            #Toan", "Van", "Ngoai ngu","Vat ly", "Hoa hoc", "Sinh hoc","Lich su", "Dia li","GDCD"
+            
+            if selected_option == "Toan":
+                plot.perHis.plot_percentage_histogram("toan")   
+            elif selected_option == "Van":
+                plot.perHis.plot_percentage_histogram("ngu_van") 
+            elif selected_option == "Ngoai ngu":
+                plot.perHis.plot_percentage_histogram("ngoai_ngu")   
+            elif selected_option == "Vat ly":
+                plot.perHis.plot_percentage_histogram("vat_li") 
+            elif selected_option == "Hoa hoc":
+                plot.perHis.plot_percentage_histogram("hoa_hoc") 
+            elif selected_option == "Sinh hoc":
+                plot.perHis.plot_percentage_histogram("sinh_hoc") 
+            elif selected_option == "Lich su":
+                plot.perHis.plot_percentage_histogram("lich_su") 
+            elif selected_option == "Dia li":
+                plot.perHis.plot_percentage_histogram("dia_li") 
+            elif selected_option == "GDCD":
+                plot.perHis.plot_percentage_histogram("gdcd")     
+            else:
+                print("Lựa chọn không hợp lệ")
+            #combobox_window.destroy()  # Đóng cửa sổ combo box sau khi chọn
         def run6():
-            path = 'plot/trendSub.py'
-            run_program(path)
+            # Tạo một cửa sổ mới khi run2() được gọi
+            combobox_window = Toplevel(root)  # Mở cửa sổ mới
+            combobox_window.title("Chọn môn hoặc tổ hợp")
+            combobox_window.geometry('300x100')
+
+            # Tạo combo box với các lựa chọn
+            combo = ttk.Combobox(combobox_window, values=["2023:A00", "2023:A02", "2023:B00","2023:C00", "2023:C19", "2023:C20",
+                                                          "2024:A00", "2024:A02", "2024:B00","2024:C00", "2024:C19", "2024:C20",
+                                                          "2023:Toan", "2023:Van", "2023:Ngoai ngu","2023:Vat ly", "2023:Hoa hoc",
+                                                          "2023:Sinh hoc","2023:Lich su", "2023:Dia li","2023:GDCD"
+                                                          "2024:Toan", "2024:Van", "2024:Ngoai ngu","2024:Vat ly", "2024:Hoa hoc",
+                                                          "2024:Sinh hoc","2024:Lich su", "2024:Dia li","2024:GDCD"])
+            combo.pack(pady=20)
+
+            # Gắn sự kiện cho combo box khi người dùng chọn một tùy chọn
+            combo.bind("<<ComboboxSelected>>", lambda event: on_combobox_select_run6(combo, combobox_window))
+
+            # Nút chạy để thực thi khi chọn một tùy chọn
+            run_button = Button(combobox_window, text="Run", command=lambda: on_combobox_select_run6(combo, combobox_window))
+            run_button.pack(pady=10)
+
+        def on_combobox_select_run6(combo, combobox_window):
+            # Lấy lựa chọn từ combo box
+            selected_option = combo.get()
+            # Ví dụ gọi hàm
+            # plot_score_distribution_by_combination(data2024, "A00", 2024)
+
+            # plot_score_distribution_by_subject(data2024, "ngu_van", 2024)
+
+            # plot_score_distribution_pie(data2024, "A00", 2024)
+
+            # plot_score_distribution_by_combinations(data2023, 2023)
+             # Load dữ liệu
+            data2023 = pd.read_csv(r"data\diem2023.csv")
+            data2024 = pd.read_csv(r"data\diem2024.csv")
+
+            # Ánh xạ lựa chọn vào hàm
+            subject_mapping = {
+                "Toan": "toan", "Van": "van", "Ngoai ngu": "ngoai_ngu", 
+                "Vat ly": "vat_li", "Hoa hoc": "hoa_hoc", "Sinh hoc": "sinh_hoc",
+                "Lich su": "lich_su", "Dia li": "dia_li", "GDCD": "gdcd"
+            }
+            combination_mapping = ["A00", "A02", "B00", "C00", "C19", "C20"]
+
+            # Xử lý lựa chọn môn học
+            for year, data in [(2023, data2023), (2024, data2024)]:
+                for subject, code in subject_mapping.items():
+                    if selected_option == f"{year}:{subject}":
+                        plot.commonPlot.plot_score_distribution_by_subject(data, code, year)
+                        print(f"Đã chọn môn {subject} năm {year}")
+                        return
+
+            # Xử lý lựa chọn tổ hợp
+            for year, data in [(2023, data2023), (2024, data2024)]:
+                for combination in combination_mapping:
+                    if selected_option == f"{year}:{combination}":
+                        plot.commonPlot.plot_score_distribution_pie(data, combination, year)
+                        print(f"Đã chọn tổ hợp {combination} năm {year}")
+                        return
+
+            print("Lựa chọn không hợp lệ")
+
+            combobox_window.destroy()  # Đóng cửa sổ combo box sau khi chọn
         
         # Xóa các widget cũ trong frame_content
         for widget in frame_content.winfo_children():
@@ -301,12 +446,12 @@ def change_content(content):
         frame_handle.grid(row=0, column=0, sticky="nswe", padx=5, pady=5)  # Sử dụng grid thay vì pack
         # Tạo các ô tính năng trong frame_handle
         buttons = [
-            ("Số lượng học sinh theo tổ hợp", lambda:run1(), "icon_UI/hcmute.png"),
-            ("Phổ điểm theo tổ hợp", lambda: run2(), "icon_UI/home.png"),
-            ("Phân bố điểm các môn THPTQG", lambda:run3(), "icon_UI/loupe.png"),
-            ("So sánh phân bố điểm", lambda:run4(), "icon_UI/group.png"),
-            ("Ma trận tương quan", lambda: run5(), "icon_UI/cells.png"),
-            ("Xu hướng điểm TB từng môn", lambda:  run6(), "icon_UI/cells.png")
+            ("Xu hướng điểm TB từng môn", lambda:run1(), "icon_UI/growth.png"),
+            ("Ma trận tương quan", lambda: run2(), "icon_UI/matrix.png"),
+            ("Phân bố điểm các tất cả môn THPT", lambda:run3(), "icon_UI/distribution.png"),
+            ("Số lượng học sinh từng khung điểm", lambda:run4(), "icon_UI/graduation.png"),
+            ("So sánh điểm các môn ở 2 năm", lambda: run5(), "icon_UI/cells.png"),
+            ("Phổ điểm từng môn hoặc tổ hợp", lambda:  run6(), "icon_UI/range.png")
         ]
         
         for i, (text_content, command, icon_path) in enumerate(buttons, start=1):
@@ -493,11 +638,11 @@ def change_content(content):
 
         # Tạo các ô tính năng trong frame_handle
         buttons = [
-            ("Hiển thị", lambda: show_student_scores(), "icon_UI/hcmute.png"),
-            ("Trang kế", lambda: page_increase(), "icon_UI/home.png"),
-            ("Trang cũ", lambda: page_decrease(), "icon_UI/loupe.png"),
-            ("Nhập trang", lambda: page_change(), "icon_UI/group.png"),
-            ("Làm mới", lambda: page_reset(), "icon_UI/cells.png")
+            ("Hiển thị", lambda: show_student_scores(), "icon_UI/advertising.png"),
+            ("Trang kế", lambda: page_increase(), "icon_UI/right-arrow.png"),
+            ("Trang cũ", lambda: page_decrease(), "icon_UI/left-arrow.png"),
+            ("Nhập trang", lambda: page_change(), "icon_UI/browser.png"),
+            ("Làm mới", lambda: page_reset(), "icon_UI/arrow.png")
         ]
         
         for i, (text_content, command, icon_path) in enumerate(buttons, start=1):
