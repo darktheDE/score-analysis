@@ -61,5 +61,4 @@ def freqSub():
     plt.show()
 
 
-# Gọi hàm với dữ liệu của năm 2023 và 2024
-# freqSub()
+freqSub()
