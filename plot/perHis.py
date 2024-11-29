@@ -26,7 +26,7 @@ def plot_percentage_histogram(subject):
     # Kiểm tra xem môn học có trong dữ liệu không
     if subject not in data1.columns or subject not in data2.columns:
         print(f"Môn học {subject} không có trong dữ liệu.")
-        return
+
 
     # Tạo biểu đồ
     fig, axs = plt.subplots(1, 2, figsize=(18, 6), sharey=True)
