@@ -47,7 +47,6 @@ def create_features(root, change_content_callback):
         ("\n \n ", lambda: change_content_callback(""), r"icon_UI\hcmute.png"),
         ("Home", lambda: change_content_callback("Home"), r"icon_UI\home.png"),
         ("Search", lambda: change_content_callback("Search"), r"icon_UI\loupe.png"),
-        ("Members", lambda: change_content_callback("Members"), r"icon_UI\group.png"),
         ("Student List", lambda: change_content_callback("Student List"), r"icon_UI\cells.png"),
         ("Chart", lambda: change_content_callback("Chart"), r"icon_UI\char.png"),
         ("Document", lambda: change_content_callback("Document"), r"icon_UI\documents.png"),
@@ -95,6 +94,42 @@ def create_content(root):
     global frame_content
     frame_content = Frame(root, bg="white")
     frame_content.grid(column=1, row=1, sticky="nsew")
+    def create_label_with_image(frame, row, col, image_file, text):
+        # Tạo Label chính
+        label = Label(frame, bg="lightblue", relief="solid")
+        label.grid(column=col, row=row, padx=18, pady=5, sticky="nsew")  # Dùng sticky để giãn rộng Label
+        
+        # Thêm Label hiển thị thông tin vào Label
+        text_label = Label(label, bg="lightblue", justify='left', anchor='w', text=text, font=('Arial', 9))
+        text_label.grid(column=1, row=0, sticky="ns")  # sticky="nswe" giúp giãn Label theo cả chiều ngang và dọc
+
+        # Thêm ảnh vào Label bên trong Label
+        try:
+            img = PhotoImage(file=image_file)
+            img = img.subsample(5, 5)  # Thay đổi kích thước ảnh theo tỷ lệ
+            img_info = Label(label, image=img, bg="lightblue")
+            img_info.grid(column=0, row=0, sticky="nswe")  # Đặt ảnh vào vị trí cột 0, hàng 0 của label
+            label.image = img  # Giữ tham chiếu đến ảnh để tránh mất ảnh
+        except Exception as e:
+            print(f"Không thể tải ảnh: {e}")
+
+        return label
+
+    for widget in frame_content.winfo_children():
+        widget.destroy()
+
+    # Tạo các label với ảnh và thông tin
+    text_info='Tên: Phan Trọng Phú \n MSSV: 23133056 \n Nhiệm vụ: Thiết kế UI'
+    create_label_with_image(frame_content, row=0, col=0, image_file= 'icon_UI/phu.png', 
+                            text='Tên: Phan Trọng Phú \n MSSV: 23133056 \n Nhiệm vụ: Thiết kế UI')
+    create_label_with_image(frame_content, row=1, col=0, image_file= 'icon_UI/qui.png',
+                                text='Tên: Phan Trọng Quí \n MSSV: 23133061 \n Nhiệm vụ: Lọc và xử lý data')
+    create_label_with_image(frame_content, row=2, col=0, image_file= 'icon_UI/hung.png', 
+                            text='Tên: Đỗ Kiến Hưng \n MSSV: 23133030 \n Nhiệm vụ: Vẽ và xử lý biểu đồ')
+    create_label_with_image(frame_content, row=0, col=1, image_file= 'icon_UI/khoa.png', 
+                            text='Tên: Lê Đăng Khoa \n MSSV: 23133036 \n Nhiệm vụ: Xây dựng chức năng và CRUD')
+    create_label_with_image(frame_content, row=1, col=1, image_file='icon_UI/danh.png',
+                                text='Tên: Trần Thành Danh \n MSSV: 23133010 \n Nhiệm vụ: Xây dựng chức năng và CRUD')
     return frame_content
 
 # Hàm để thay đổi nội dung khi nhấn nút
@@ -127,7 +162,7 @@ def change_content(content):
     for widget in frame_content.winfo_children():
         widget.destroy()
 
-    if content == 'Members':
+    if content == 'Home':
 
         # Tạo các label với ảnh và thông tin
         text_info='Tên: Phan Trọng Phú \n MSSV: 23133056 \n Nhiệm vụ: Thiết kế UI'
@@ -379,7 +414,7 @@ def change_content(content):
             combo = ttk.Combobox(combobox_window, values=["2023:A00", "2023:A02", "2023:B00","2023:C00", "2023:C19", "2023:C20",
                                                           "2024:A00", "2024:A02", "2024:B00","2024:C00", "2024:C19", "2024:C20",
                                                           "2023:Toan", "2023:Van", "2023:Ngoai ngu","2023:Vat ly", "2023:Hoa hoc",
-                                                          "2023:Sinh hoc","2023:Lich su", "2023:Dia li","2023:GDCD"
+                                                          "2023:Sinh hoc","2023:Lich su", "2023:Dia li","2023:GDCD",
                                                           "2024:Toan", "2024:Van", "2024:Ngoai ngu","2024:Vat ly", "2024:Hoa hoc",
                                                           "2024:Sinh hoc","2024:Lich su", "2024:Dia li","2024:GDCD"])
             combo.pack(pady=20)
@@ -408,7 +443,7 @@ def change_content(content):
 
             # Ánh xạ lựa chọn vào hàm
             subject_mapping = {
-                "Toan": "toan", "Van": "van", "Ngoai ngu": "ngoai_ngu", 
+                "Toan": "toan", "Van": "ngu_van", "Ngoai ngu": "ngoai_ngu", 
                 "Vat ly": "vat_li", "Hoa hoc": "hoa_hoc", "Sinh hoc": "sinh_hoc",
                 "Lich su": "lich_su", "Dia li": "dia_li", "GDCD": "gdcd"
             }
