@@ -127,4 +127,4 @@ def plot_student_distribution_comparison():
     plt.tight_layout(pad=9.0)
     plt.show()
 
-# plot_student_distribution_comparison()
+plot_student_distribution_comparison()
