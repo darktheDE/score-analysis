@@ -6,6 +6,7 @@ Module chứa các hàm để trực quan hóa dữ liệu điểm thi, bao gồ
 # data_visualization.py
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 # Dữ liệu tổ hợp môn theo khối cụ thể (đã sửa tên các môn học)
@@ -234,13 +235,14 @@ def plot_score_distribution_by_combination(data, combination_code, year):
     plt.show()
 
 
+
 def plot_score_distribution_pie(data, combination_code, year):
     """
     Vẽ biểu đồ tròn thể hiện tỷ lệ học sinh thuộc các nhóm điểm của một tổ hợp môn.
 
     Args:
         data (pd.DataFrame): Dữ liệu điểm thi với mỗi cột là một môn học và các hàng là điểm của từng học sinh.
-        combination_code (str): Mã tổ hợp môn (ví dụ: "A01", "C00") để tính tổng điểm tổ hợp.
+        combination_code (str): Mã tổ hợp môn (ví dụ: "A00", "C00") để tính tổng điểm tổ hợp.
         year (int): Năm thi.
 
     Returns:
@@ -265,12 +267,14 @@ def plot_score_distribution_pie(data, combination_code, year):
     data = data.dropna(subset=subjects)
     # Tính điểm tổ hợp
     data["combination_score"] = data[subjects].sum(axis=1)
-    bins = [0, 15, 24, 30]
-    labels = ["< 15", "15 - 24", ">= 24"]
+
+    # Chia nhóm điểm với khoảng từ 0-15 là một nhóm, và từ 15 đến 30 chia thành 5 khoảng
+    bins = [0, 15, 18, 21, 24, 27, 30]
+    labels = ["< 15", "15 - 18", "18 - 21", "21 - 24", "24 - 27", "27 - 30"]
     data["score_group"] = pd.cut(
         data["combination_score"], bins=bins, labels=labels, include_lowest=True
     )
-    group_counts = data["score_group"].value_counts()
+    group_counts = data["score_group"].value_counts().sort_index()
 
     plt.figure(figsize=(8, 8))
     plt.pie(
@@ -278,7 +282,7 @@ def plot_score_distribution_pie(data, combination_code, year):
         labels=group_counts.index,
         autopct="%1.1f%%",
         startangle=90,
-        colors=["red", "yellow", "green"],
+        colors=plt.cm.viridis(np.linspace(0, 1, len(bins) - 1)),
     )
     plt.title(
         f"Tỷ lệ học sinh theo mức điểm tổ hợp {combination_code} TPHCM năm {year}"
@@ -288,6 +292,7 @@ def plot_score_distribution_pie(data, combination_code, year):
     plt.legend(title="Nhóm điểm", loc="upper left")
 
     plt.show()
+
 
 
 def plot_score_distribution_by_combinations(data, year):
