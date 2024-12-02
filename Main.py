@@ -43,10 +43,12 @@ def menu(crud):
         
         if choose == "1":
             sbd_input = ""
-            while len(sbd_input) != 8 or not sbd_input.isdigit:
+            while len(sbd_input) != 8 or not sbd_input.isdigit() or int(sbd_input) < 2000001:
                 sbd_input = input("Nhập số báo danh: ")
-                if len(sbd_input) != 8 or not sbd_input.isdigit:
+                if len(sbd_input) != 8 or not sbd_input.isdigit():
                     print("Số báo danh không hợp lệ, vui lòng nhập lại theo format của bộ giáo dục!")
+                elif int(sbd_input) < 2000001:
+                    print('Vui lòng thử lại, bạn chỉ có thể nhập mã thí sinh bắt đầu từ 02000001!')
 
             scores_input = {}
             for subject in crud.subjects:
@@ -59,29 +61,26 @@ def menu(crud):
                     score_input = input(f"Nhập điểm thi môn {crud.convert[subject]} (-1 nếu không thi môn đó): ")
                     check_num = False
                     check_abc = False
-                    for i in range(len(score_input)):
-                        if score_input[0] == '-':
-                            continue
-                        if isFloat(score_input) == False:
-                            check_abc = True
-                            print("Có lỗi xảy ra, vui lòng nhập điểm là chữ số!")
-                            break
-                    
-                    if check_abc == False:
-                        score_float = float(score_input)
-                        if score_float < -1 or score_float > 10:
-                            print("Điểm thi không hợp lệ, vui lòng nhập lại!")
-                            check_num = True
+
+                    if not isFloat(score_input):
+                        check_abc = True
+                        print("Có lỗi xảy ra, vui lòng nhập điểm là số hợp lệ!")
+                        continue
+
+                    score_float = float(score_input)
+                    if score_float < -1 or score_float > 10:
+                        print("Điểm thi không hợp lệ, vui lòng nhập lại!")
+                        check_num = True
 
                 if score_float == -1:
                     scores_input[subject] = ''
                 else:
                     scores_input[subject] = score_float
-                
+
             crud.add_score(sbd_input, scores_input)
-            print("Thêm dữ liệu cho thí sinh mới thành công!")
             con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
+
         elif choose == "2":
             temp_list = crud.read_score()
             for row in temp_list:
@@ -89,6 +88,7 @@ def menu(crud):
             print("\nDữ liệu trong file đã được đọc thành công!")
             con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
+
         elif choose == "3":
             sbd_input = ""
             subject_input = ""
@@ -101,7 +101,8 @@ def menu(crud):
                     if sbd_input == row[0]:
                         check = False
                         break
-                    
+
+                # SBD tồn tại trong file dataset  
                 if check == False:
                     subject_input = ''
                     while subject_input not in crud.subjects:
@@ -113,23 +114,24 @@ def menu(crud):
                     check_num = True
                     check_abc = True
                     while check_num or check_abc:
-                        score_input = input(f"Nhập điểm thi môn {crud.convert[subject_input]} cần thay đổi: ")
+                        score_input = input(f"Nhập điểm thi môn {crud.convert[subject_input]} cần thay đổi (-1 nếu không thi môn đó): ")
                         check_num = False
                         check_abc = False
-                        for i in range(len(score_input)):
-                            if score_input[0] == '-':
-                                continue
-                            if isFloat(score_input) == False:
-                                check_abc = True
-                                print("Có lỗi xảy ra, vui lòng nhập điểm là chữ số!")
-                                break
-                    
-                        if check_abc == False:
-                            score_float = float(score_input)
-                            if score_float < -1 or score_float > 10:
-                                print("Điểm thi không hợp lệ, vui lòng nhập lại!")
-                                check_num = True
-                                
+
+                        if not isFloat(score_input):
+                            check_abc = True
+                            print("Có lỗi xảy ra, vui lòng nhập điểm là số hợp lệ!")
+                            continue
+
+                        score_float = float(score_input)
+                        if score_float < -1 or score_float > 10:
+                            print("Điểm thi không hợp lệ, vui lòng nhập lại!")
+                            check_num = True
+
+                    if score_float == -1:
+                        score_float = ''
+
+                # SBD không tồn tại trong dataset             
                 if check == True:
                     print("Số báo danh không hợp lệ, vui lòng nhập lại!")
 
@@ -137,27 +139,39 @@ def menu(crud):
             print(f"Cập nhật điểm thi môn {crud.convert[subject_input]} thí sinh {sbd_input} thành công!")
             con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
+            
         elif choose == "4":
-            check = True
             sbd_input = ""
-            while check:
+            check = True
+            while len(sbd_input) != 8 or not sbd_input.isdigit() or int(sbd_input) < 2000001 or check:
                 sbd_input = input("Nhập số báo danh: ")
-                temp_list = crud.read_score()
-                for row in temp_list:
-                    if sbd_input == row[0]:
-                        check = False
-                        break
-                if check:
-                    print("Số báo danh không hợp lệ, vui lòng nhập lại!")
+                check = False
+                if len(sbd_input) != 8 or not sbd_input.isdigit():
+                    print("Số báo danh không hợp lệ, vui lòng nhập lại theo format của bộ giáo dục!")
+                    continue
+                elif int(sbd_input) < 2000001:
+                    print('Vui lòng thử lại, bạn chỉ có thể nhập mã thí sinh bắt đầu từ 02000001!')
+                    continue
+                else:
+                    check = True
+                    temp_list = crud.read_score()
+                    for row in temp_list:
+                        if sbd_input == row[0]:
+                            check = False
+                            break              
+                    if check:
+                        print("Số báo danh không tồn tại, vui lòng thử lại")
 
             print(f"\nXóa thông tin thí sinh {sbd_input} thành công!")
             crud.delete_score(sbd_input)
             con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
+
         elif choose == '5':
             crud.find_top_scorer_per_group()
             con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
+
         elif choose == '6':
             subject_input = input("Nhập tên môn học cần sắp xếp theo điểm thi: ")
             user_input = ""
@@ -175,22 +189,40 @@ def menu(crud):
             crud.sort_by_subject(subject_input, isDescending)
             con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
+
         elif choose == '7':
             sbd_input = ""
-            while len(sbd_input) != 8 or not sbd_input.isdigit:
-                sbd_input = input("Nhập số báo danh cần tìm kiếm: ")
-                if len(sbd_input) != 8 or not sbd_input.isdigit:
+            check = True
+            while len(sbd_input) != 8 or not sbd_input.isdigit() or int(sbd_input) < 2000001 or check:
+                sbd_input = input("Nhập số báo danh: ")
+                check = False
+                if len(sbd_input) != 8 or not sbd_input.isdigit():
                     print("Số báo danh không hợp lệ, vui lòng nhập lại theo format của bộ giáo dục!")
-                                
+                    continue
+                elif int(sbd_input) < 2000001:
+                    print('Vui lòng thử lại, bạn chỉ có thể nhập mã thí sinh bắt đầu từ 02000001!')
+                    continue
+                else:
+                    check = True
+                    temp_list = crud.read_score()
+                    for row in temp_list:
+                        if sbd_input == row[0]:
+                            check = False
+                            break              
+                    if check:
+                        print("Số báo danh không tồn tại, vui lòng thử lại")
+
             crud.find_by_sbd(sbd_input)
             con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
+            
         elif choose == '8':
             subject_input = ''
             while subject_input not in crud.subjects:
                 subject_input = input("Nhập môn học cần tìm kiếm: ")
                 if subject_input not in crud.subjects:
                     print("Không tìm thấy môn học này trong các môn thi, vui lòng thử lại theo danh sách các môn\n", crud.subjects)
+
             check_num = True
             check_abc = True
             score_float = 0
@@ -198,22 +230,21 @@ def menu(crud):
                 check_num = False
                 check_abc = False
                 score_input = input("Nhập điểm thi môn học cần tìm kiếm: ")
-                if score_input[0] == '-':
-                    print("\nVui lòng nhập điểm thi không âm!")
+
+                if isFloat(score_input) == False:
+                    check_abc = True
+                    print("Vui lòng nhập điểm thi là số hợp lệ!")
+                    continue
+                
+                score_float = float(score_input)
+                if score_float > 10 or score_float < 0:
+                    print("Điểm thi không hợp lệ, vui lòng nhập lại!")
                     check_num = True
-                else:
-                    if isFloat(score_input) == False:
-                        check_abc = True
-                        print("\nVui lòng nhập điểm thi là chữ số!")
-                    if check_abc == False:
-                        score_float = float(score_input)
-                        if score_float > 10:
-                            print("\nĐiểm thi không hợp lệ, vui lòng nhập lại!")
-                            check_num = True
 
             crud.find(subject_input, score_float)
             con = input("Nhấn phím Enter để tiếp tục...")
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
+
         elif choose == "0":
             # Kiểm tra hệ điều hành nt = Windows -> thực hiện clrsc trên terminal
             subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)

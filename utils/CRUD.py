@@ -28,18 +28,28 @@ class CRUD:
             sbd(string): Số báo danh cho thí sinh cần thêm
             scores(dictionary): Chứa các item với key là tên môn thi và value là điểm thi
         """
+
         scores_list = [scores.get(subject) for subject in self.subjects]
         try:
-            with open(self.file_path, mode = 'a', newline='') as csv_file:
-                writer = csv.writer(csv_file)
-                row = [sbd] + scores_list
-                writer.writerow(row)
+            with open(self.file_path, mode = 'r', newline = '') as csv_file:
+                reader = csv.reader(csv_file)
+                next(reader)
+                data = list(reader)
         except FileNotFoundError:
             print(f"File không tìm thấy: {self.file_path}")
             return None
         except Exception as e:
             print(f"Đã xảy ra lỗi: {e}")
             return None
+        for row in data:
+            if row[0] == sbd:
+                print("Đã tồn tại thí sinh có số báo danh này, không thể thêm mới")
+                return
+        
+        with open(self.file_path, mode = 'a', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            row = [sbd] + scores_list
+            writer.writerow(row)
 
 
     def read_score(self): 
