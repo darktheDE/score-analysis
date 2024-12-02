@@ -18,6 +18,8 @@ The project is organized into several main files and directories:
   - **`freqSub.py`**: Contains function `freqSub`.
   - **`heatmap.py`**: Contains functions for heatmap visualizations.
   - **`perHis.py`**: Contains function `plot_percentage_histogram`.
+  - **`scaComb.py`**: Contains function `scaPlot_combination`.
+  - **`scaSub.py`**: Contains function `scaPlot_compareSub`.
 - **`utils/`**: 🔧 Contains utility scripts.
   - **`CRUD.py`**:🔄 Handles CRUD operations on CSV data. Provides functions for CRUD (Create, Read, Update, Delete) operations, enabling efficient data management.
 - **`UI.py`**: 🖥 Implements a graphical user interface for easy interaction with the dataset.
