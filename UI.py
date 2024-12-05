@@ -13,6 +13,7 @@ from plot import *
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import csv
 # import plot
 # Tạo cửa sổ chính
 root = Tk()
@@ -86,7 +87,7 @@ def create_menu(root):
     frame_menu.grid(column=1, row=0, sticky="ew")
 
     # Thêm nút hoặc nội dung vào menu (có thể bổ sung nếu cần)
-    Label(frame_menu, text = ' Chương trình phân tích điểm thi 2023 và 2024 THPTQG HCM ' , font=('Arial',20), fg= 'white', justify='center',
+    Label(frame_menu, text = ' Chương trình phân tích điểm thi 2023 và 2024 THPTQG HCM ' , font=('Arial',16), fg= 'white', justify='center',
         bg="#104E8B").grid(column=0, row=0, padx=10, pady=5)
 
 # Tạo nội dung (Nội dung chính)
@@ -135,7 +136,7 @@ def create_content(root):
 # Hàm để thay đổi nội dung khi nhấn nút
 def change_content(content):
     #hàm khởi tạo đối tượng
-    file_pa = CRUD(r'data\diem2023.csv')
+    file_pa = CRUD(r'data\diem2024.csv')
     student_data = file_pa.read_score()
     # Hàm để tạo một Label với ảnh và thông tin
     def create_label_with_image(frame, row, col, image_file, text):
@@ -527,6 +528,213 @@ def change_content(content):
         # Xóa các widget cũ trong frame_content
         for widget in frame_content.winfo_children():
             widget.destroy()
+        def add_score( sbd, scores):
+            """
+            Hàm thêm điểm cho một thí sinh mới
+
+            Args:
+                sbd(string): Số báo danh cho thí sinh cần thêm
+                scores(dictionary): Chứa các item với key là tên môn thi và value là điểm thi
+            """
+            subjects = ["toan", "ngu_van", "ngoai_ngu", "vat_li", "hoa_hoc", "sinh_hoc", "lich_su", "dia_li", "gdcd"]
+            file_path = r'data\diem2024.csv' 
+            scores_list = [scores.get(subject) for subject in subjects]
+            try:
+                with open(file_path, mode='a', newline='') as csv_file:
+                    writer = csv.writer(csv_file)
+                    row = [sbd] + scores_list
+                    writer.writerow(row)
+            except FileNotFoundError:
+                print(f"File không tìm thấy: {file_path}")
+                return None
+            except Exception as e:
+                print(f"Đã xảy ra lỗi: {e}")
+                return None
+
+        def run1():
+            # Xóa nội dung cũ trong frame_display
+            for widget in frame_display.winfo_children():
+                widget.destroy()
+
+            subjects = ["toan", "ngu_van", "ngoai_ngu", "vat_li", "hoa_hoc", "sinh_hoc", "lich_su", "dia_li", "gdcd"]
+
+            # Tiêu đề
+            Label(frame_display, text="Thêm Điểm Thí Sinh", font=("Helvetica", 16), bg="lightgray").grid(row=0, column=0, columnspan=2, pady=10)
+
+            # Trường nhập SBD
+            Label(frame_display, text="Số Báo Danh (SBD):", bg="lightgray").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+            sbd_entry = Entry(frame_display, width=30)
+            sbd_entry.grid(row=1, column=1, padx=10, pady=5)
+
+            # Tạo các trường nhập điểm cho từng môn
+            score_entries = {}
+            for i, subject in enumerate(subjects, start=2):
+                Label(frame_display, text=f"Điểm {subject}:", bg="lightgray").grid(row=i, column=0, padx=10, pady=5, sticky="e")
+                score_entry = Entry(frame_display, width=30)
+                score_entry.grid(row=i, column=1, padx=10, pady=5)
+                score_entries[subject] = score_entry
+
+            # Nút thêm điểm
+            def save_scores():
+                sbd = sbd_entry.get().strip()
+                scores = {subject: score_entries[subject].get().strip() for subject in subjects}
+
+                # Kiểm tra và gọi hàm thêm điểm
+                if not sbd or any(score == "" for score in scores.values()):
+                    Label(frame_display, text="Vui lòng nhập đầy đủ thông tin!", fg="red", bg="lightgray").grid(row=len(subjects) + 2, column=0, columnspan=2, pady=10)
+                    return
+
+                try:
+                    # Chuyển đổi điểm số sang dạng số
+                    scores = {k: float(v) for k, v in scores.items()}
+                    add_score(sbd, scores)  # Gọi hàm thêm điểm từ lớp hiện tại
+                    Label(frame_display, text="Thêm thành công!", fg="green", bg="lightgray").grid(row=len(subjects) + 3, column=0, columnspan=2, pady=10)
+                except ValueError:
+                    Label(frame_display, text="Điểm phải là số hợp lệ!", fg="red", bg="lightgray").grid(row=len(subjects) + 3, column=0, columnspan=2, pady=10)
+                except Exception as e:
+                    Label(frame_display, text=f"Đã xảy ra lỗi: {e}", fg="red", bg="lightgray").grid(row=len(subjects) + 3, column=0, columnspan=2, pady=10)
+
+            # Nút lưu điểm
+            add_button = Button(frame_display, text="Lưu Điểm", command=save_scores, bg="#000080", fg="white", width=15)
+            add_button.grid(row=len(subjects) + 2, column=0, columnspan=2, pady=10)
+
+        def run2():
+            # Xóa nội dung cũ trong frame_display
+            for widget in frame_display.winfo_children():
+                widget.destroy()
+
+            file_path = r'data\diem2024.csv'
+
+            # Tiêu đề
+            Label(frame_display, text="Xóa Điểm Thí Sinh", font=("Helvetica", 16), bg="lightgray").grid(row=0, column=0, columnspan=2, pady=10)
+
+            # Trường nhập SBD
+            Label(frame_display, text="Số Báo Danh (SBD):", bg="lightgray").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+            sbd_entry = Entry(frame_display, width=30)
+            sbd_entry.grid(row=1, column=1, padx=10, pady=5)
+
+            def delete_score():
+                sbd_to_delete = sbd_entry.get().strip()
+                if not sbd_to_delete:
+                    Label(frame_display, text="Vui lòng nhập SBD!", fg="red", bg="lightgray").grid(row=3, column=0, columnspan=2, pady=10)
+                    return
+
+                try:
+                    # Đọc file CSV và lọc lại dữ liệu
+                    with open(file_path, mode='r', newline='') as csv_file:
+                        rows = list(csv.reader(csv_file))
+                    
+                    # Loại bỏ dòng có SBD trùng khớp
+                    updated_rows = [row for row in rows if row[0] != sbd_to_delete]
+                    
+                    if len(rows) == len(updated_rows):
+                        # Không tìm thấy SBD
+                        Label(frame_display, text="Không tìm thấy SBD!", fg="red", bg="lightgray").grid(row=3, column=0, columnspan=2, pady=10)
+                        return
+
+                    # Ghi lại file CSV với dữ liệu đã cập nhật
+                    with open(file_path, mode='w', newline='') as csv_file:
+                        writer = csv.writer(csv_file)
+                        writer.writerows(updated_rows)
+
+                    Label(frame_display, text="Xóa thành công!", fg="green", bg="lightgray").grid(row=3, column=0, columnspan=2, pady=10)
+                except FileNotFoundError:
+                    Label(frame_display, text="File dữ liệu không tồn tại!", fg="red", bg="lightgray").grid(row=3, column=0, columnspan=2, pady=10)
+                except Exception as e:
+                    Label(frame_display, text=f"Đã xảy ra lỗi: {e}", fg="red", bg="lightgray").grid(row=3, column=0, columnspan=2, pady=10)
+
+            # Nút xóa điểm
+            delete_button = Button(frame_display, text="Xóa Điểm", command=delete_score, bg="#800000", fg="white", width=15)
+            delete_button.grid(row=2, column=0, columnspan=2, pady=10)
+        def update_score(sbd, new_scores):
+            """
+            Hàm sửa điểm cho một sinh viên theo số báo danh (SBD).
+
+            Args:
+                sbd (string): Số báo danh của sinh viên cần sửa điểm.
+                new_scores (dict): Dữ liệu điểm mới của sinh viên với key là tên môn và value là điểm.
+            """
+            subjects = ["toan", "ngu_van", "ngoai_ngu", "vat_li", "hoa_hoc", "sinh_hoc", "lich_su", "dia_li", "gdcd"]
+            file_path = r'data\diem2024.csv'
+            updated = False
+            rows = []
+
+            try:
+                # Đọc toàn bộ dữ liệu từ file CSV
+                with open(file_path, mode='r', newline='') as csv_file:
+                    reader = csv.reader(csv_file)
+                    rows = list(reader)  # Đọc toàn bộ dữ liệu vào list rows
+                    
+                # Tìm sinh viên theo SBD và cập nhật điểm
+                for i, row in enumerate(rows):
+                    if row[0] == sbd:  # Kiểm tra SBD
+                        # Cập nhật điểm cho từng môn
+                        updated_scores = [new_scores.get(subject, row[idx + 1]) for idx, subject in enumerate(subjects)]
+                        rows[i] = [sbd] + updated_scores
+                        updated = True
+                        break
+                
+                if updated:
+                    # Ghi lại dữ liệu đã cập nhật vào file CSV
+                    with open(file_path, mode='w', newline='') as csv_file:
+                        writer = csv.writer(csv_file)
+                        writer.writerows(rows)  # Ghi lại tất cả dữ liệu
+                    print("Cập nhật điểm thành công!")
+                else:
+                    print(f"Không tìm thấy sinh viên với SBD: {sbd}")
+            
+            except FileNotFoundError:
+                print(f"File không tìm thấy: {file_path}")
+            except Exception as e:
+                print(f"Đã xảy ra lỗi: {e}")
+        def run3():
+            # Xóa nội dung cũ trong frame_display
+            for widget in frame_display.winfo_children():
+                widget.destroy()
+
+            subjects = ["toan", "ngu_van", "ngoai_ngu", "vat_li", "hoa_hoc", "sinh_hoc", "lich_su", "dia_li", "gdcd"]
+
+            # Tiêu đề
+            Label(frame_display, text="Sửa Điểm Thí Sinh", font=("Helvetica", 16), bg="lightgray").grid(row=0, column=0, columnspan=2, pady=10)
+
+            # Trường nhập SBD
+            Label(frame_display, text="Số Báo Danh (SBD):", bg="lightgray").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+            sbd_entry = Entry(frame_display, width=30)
+            sbd_entry.grid(row=1, column=1, padx=10, pady=5)
+
+            # Tạo các trường nhập điểm cho từng môn
+            score_entries = {}
+            for i, subject in enumerate(subjects, start=2):
+                Label(frame_display, text=f"Điểm {subject}:", bg="lightgray").grid(row=i, column=0, padx=10, pady=5, sticky="e")
+                score_entry = Entry(frame_display, width=30)
+                score_entry.grid(row=i, column=1, padx=10, pady=5)
+                score_entries[subject] = score_entry
+
+            # Nút lưu điểm sửa
+            def save_scores():
+                sbd = sbd_entry.get().strip()
+                scores = {subject: score_entries[subject].get().strip() for subject in subjects}
+
+                # Kiểm tra và gọi hàm sửa điểm
+                if not sbd or any(score == "" for score in scores.values()):
+                    Label(frame_display, text="Vui lòng nhập đầy đủ thông tin!", fg="red", bg="lightgray").grid(row=len(subjects) + 2, column=0, columnspan=2, pady=10)
+                    return
+
+                try:
+                    # Chuyển đổi điểm số sang dạng số
+                    scores = {k: float(v) for k, v in scores.items()}
+                    
+                    # Gọi hàm sửa điểm
+                    update_score(sbd, scores)  # Gọi hàm update_score để sửa điểm trong file
+                    Label(frame_display, text="Sửa điểm thành công!", fg="green", bg="lightgray").grid(row=len(subjects) + 3, column=0, columnspan=2, pady=10)
+                except ValueError:
+                    Label(frame_display, text="Điểm phải là số hợp lệ!", fg="red", bg="lightgray").grid(row=len(subjects) + 3, column=0, columnspan=2, pady=10)
+                except Exception as e:
+                    Label(frame_display, text=f"Đã xảy ra lỗi: {e}", fg="red", bg="lightgray").grid(row=len(subjects) + 3, column=0, columnspan=2, pady=10)
+
+            # Nút lưu điểm
+            update_button = Button(frame_display, text="Lưu Điểm Sửa", command=save_scores, bg="#000080", fg="white", width=15)
+            update_button.grid(row=len(subjects) + 2, column=0, columnspan=2, pady=10)
         # Đặt cấu hình của grid để phân chia tỷ lệ cột
         frame_content.grid_columnconfigure(0, weight=1)  # Cột 0 (frame_handle) chiếm 1 phần
         frame_content.grid_columnconfigure(1, weight=6)  # Cột 1 (frame_display) chiếm 4 phần
@@ -536,9 +744,9 @@ def change_content(content):
         frame_handle.grid(row=0, column=0, sticky="nswe", padx=5, pady=5)  # Sử dụng grid thay vì pack
         # Tạo các ô tính năng trong frame_handle
         buttons = [
-            ("Thêm một sinh viên", lambda:run1(), "icon_UI/hcmute.png"),
-            ("Xóa một sinh viên", lambda: run2(), "icon_UI/home.png"),
-            ("Sắp  xếp", lambda:run3(), "icon_UI/loupe.png"),
+            ("Thêm một thí sinh", lambda:run1(), "icon_UI/browser.png"),
+            ("Xóa một thí sinh", lambda: run2(), "icon_UI/char.png"),
+            ("Sửa điểm cho 1 thí sinh", lambda:run3(), "icon_UI/documents.png"),
             ("Chưa nâng cấp", lambda:run4(), "icon_UI/group.png"),
         ]
         
@@ -661,7 +869,6 @@ def change_content(content):
             show_student_scores()
 
 
-
         # Đặt cấu hình của grid để phân chia tỷ lệ cột
         frame_content.grid_columnconfigure(0, weight=1)  # Cột 0 (frame_handle) chiếm 1 phần
         frame_content.grid_columnconfigure(1, weight=6)  # Cột 1 (frame_display) chiếm 4 phần
@@ -726,5 +933,6 @@ create_menu(root)
 create_content(root )
 
 root.mainloop()
+
 
 
